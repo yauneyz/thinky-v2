@@ -1,0 +1,93 @@
+.App {
+  text-align: center;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.app-title{
+	font-size:xx-large;
+	font-weight:bold;
+}
+
+.board-name{
+	font-size: large;
+}
+
+.top-buffer{
+	margin-top: 25px;
+}
+
+.sidenav {
+  height: 100%;
+  width: 140px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #003366;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav li {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav li:hover {
+  color: #f1f1f1;
+}
+
+li.active {
+	color: white;
+}
+
+.main {
+  margin-left: 140px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+
+ul{
+	list-style-type:none
+}
+
+.add-board{
+	background-color: #FFD700 !important
+}
+
+.board-name{
+	cursor:pointer
+}
+
+.idea{
+	background: #0096FF;
+	padding: 5px;
+	margin: 5px
+}
+
+.column{
+	background: #0096FF;
+	padding: 5px;
+	margin: 5px
+}
+
+.columnsList{
+	display: flex;
+}
+
+.ideas-header{
+	text-aligh:center
+}
+
+.idea-delete-btn{
+	float:left
+}
+
+.idea-add-btn{
+	float:right
+}

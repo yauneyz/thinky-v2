@@ -1,0 +1,53 @@
+3/17:
+What can you do with programming languages that you can't do with well designed libraries and frameworks?
+
+Haskell vs lisp, does Haskell have "beating the averages" clout?
+
+What is the current frontier of "higher level languages?"
+
+Dr. Germane should write essays, if he likes thinking this much.
+
+
+Meeting: 
+What I did:
+Got redux working, kinda
+Even got my stuff to be editable and everything
+Got to the point where I was sending state back to server
+Then it turns out my login functionality is broken because of Redux so now I'm working on fixing that
+
+What music does he program to?
+
+My plan is to get as far as I can with Spaghetti code then refactor.
+
+Question: How could the developer experience be better? Not just minor improvement, but big ones. What made LISP machines so good? How could we achieve it?
+
+
+Meeting:
+I want to see his emacs setup in action
+Haskell? What are the most practical higher level languages?
+
+
+Permisionlesness
+- when do you want it, when don't you, how do you get it, could it inform
+
+
+Login button form
+- I just had to set the right cookie
+
+
+
+Text inputs - how to update a list of items?
+
+Styling
+
+
+Unique key props
+Read router documentation
+Split into two pages
+- conditional "if logged in"
+Read Stripe documentation
+Payments page
+Switch inputs to text boxes
+- database change
+- input change
+- figure out how to save changes to the server 
