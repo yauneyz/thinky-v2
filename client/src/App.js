@@ -22,7 +22,6 @@ import {
 } from "./redux/actions";
 import save from "./utils/save";
 
-const baseURL = "http://localhost:8000/";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +40,7 @@ class App extends React.Component {
 
   getBoards() {
     // This only runs if we are logged in
-    fetch(baseURL + "boards", { credentials: "include" })
+    fetch("boards", { credentials: "include" })
       .then((res) => res.json())
       .then(
         (res) => {
@@ -67,7 +66,7 @@ class App extends React.Component {
 
   componentDidMount() {
     var self = this;
-    fetch(baseURL + "auth/user", { credentials: "include" })
+    fetch("auth/user", { credentials: "include" })
       .then((res) => {
         return res;
       })

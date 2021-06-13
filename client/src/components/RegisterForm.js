@@ -12,9 +12,8 @@ class RegisterForm extends React.Component {
   }
 
   async register() {
-    const baseURL = process.env.REACT_APP_BASE_URL;
     const data = { email: this.state.email };
-    const resource = baseURL + "auth/register";
+    const resource = "auth/register";
     await fetch(resource, {
       method: "POST",
       body: JSON.stringify(data),

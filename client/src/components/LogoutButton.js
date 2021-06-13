@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 
 class LogoutButton extends React.Component {
   async logout() {
-    const baseURL = "http://localhost:8000/";
-    await fetch(baseURL + "auth/logout", {
+    await fetch("auth/logout", {
       method: "GET",
       credentials: "include",
       headers: {

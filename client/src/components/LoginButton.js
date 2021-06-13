@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 class LoginButton extends React.Component {
   async login() {
-    const baseURL = "http://localhost:8000/";
     const data = { email: this.state.email };
     await fetch("/auth/login", {
       method: "POST",

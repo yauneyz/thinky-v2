@@ -3,7 +3,6 @@ require("dotenv").config();
 
 async function save() {
   // Create a post request to store the current boards array
-  //const baseURL = process.env.BASE_URL
 
   const state = store.getState();
 
@@ -11,9 +10,8 @@ async function save() {
   if (!(state.loggedIn && state.isLoaded)) {
     return;
   }
-  const baseURL = "http://localhost:8000/";
   const data = { boards: store.getState().boards };
-  const _res = await fetch(baseURL + "boards", {
+  const _res = await fetch("boards", {
     credentials: "include",
     method: "PUT",
     body: JSON.stringify(data),
