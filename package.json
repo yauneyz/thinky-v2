@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "heroku-postbuild": "npm run build",
-    "start": "nodemon --inspect server/server.js",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
+    "start": "node server.js",
     "client": "cd client && npm start",
     "test": "jest",
     "develop": "concurrently --kill-others-on-fail \"npm run start\" \"npm run client\"",
