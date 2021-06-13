@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "heroku-postbuild": "npm run build",
-    "start": "nodemon --inspect backend/server.js",
+    "start": "nodemon --inspect server/server.js",
     "client": "cd client && npm start",
     "test": "jest",
     "develop": "concurrently --kill-others-on-fail \"npm run start\" \"npm run client\"",
