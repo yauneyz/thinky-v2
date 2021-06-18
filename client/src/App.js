@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import "./App.css";
 
-import { Random, RandomizeButton } from "./components/Random";
+import Random from "./components/Random";
+import RandomizeButton from "./components/RandomizeButton";
 import LoginButton from "./components/LoginButton";
 import DeleteBoardButton from "./components/DeleteBoardButton";
 import RegisterForm from "./components/RegisterForm";
@@ -29,6 +30,7 @@ class App extends React.Component {
     // Bind methods
     this.updateRandom = this.updateRandom.bind(this);
     this.addIdea = this.addIdea.bind(this);
+    this.state = { mounted: false };
   }
 
   // Add idea
@@ -64,9 +66,9 @@ class App extends React.Component {
       );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     var self = this;
-    fetch("auth/user", { credentials: "include" })
+    await fetch("auth/user", { credentials: "include" })
       .then((res) => {
         return res;
       })
@@ -74,6 +76,7 @@ class App extends React.Component {
       .then(function (res) {
         if (res.success) {
           self.props.login(true);
+          self.setState({ mounted: true });
         }
       });
   }
@@ -89,6 +92,9 @@ class App extends React.Component {
   }
 
   render() {
+    if (!this.state.mounted) {
+      return <div>Loading</div>;
+    }
     console.log(`Logged in: ${this.props.loggedIn}`);
     console.log(`Loaded: ${this.props.isLoaded}`);
     // See if we are already logged in
@@ -197,13 +203,14 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { loggedIn, boards, randoms, isLoaded, active } = state;
+  const { loggedIn, boards, randoms, isLoaded, active, mounted } = state;
   return {
     boards: boards,
     randoms: randoms,
     isLoaded: isLoaded,
     loggedIn: loggedIn,
     active: active,
+    mounted: mounted,
   };
 };
 

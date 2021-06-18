@@ -22,21 +22,24 @@ class IdeasList extends React.Component {
     const active = this.props.active;
     const ideas = this.props.boards[active].ideas;
 
-    const ideasList = ideas.map((idea, index) => (
-      <Draggable key={idea + index} draggableId={idea + index} index={index}>
-        {(provided, _snapshot) => {
-          return (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-            >
-              <Idea key={index} id={index} />
-            </div>
-          );
-        }}
-      </Draggable>
-    ));
+    const ideasList = ideas.map((idea, index) => {
+      const id = idea._id;
+      return (
+        <Draggable key={idea + index} draggableId={idea + index} index={index}>
+          {(provided, _snapshot) => {
+            return (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                <Idea key={index} id={id} />
+              </div>
+            );
+          }}
+        </Draggable>
+      );
+    });
 
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>

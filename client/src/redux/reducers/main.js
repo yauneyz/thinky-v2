@@ -1,5 +1,6 @@
 import update from "react-addons-update";
 import { ObjectID } from "bson";
+import getRandoms from "../../utils/randomizer";
 
 import {
   LOGOUT,
@@ -7,7 +8,7 @@ import {
   SET_COLUMN,
   SET_ACTIVE_BOARD,
   SET_IDEAS,
-	SET_COLUMNS,
+  SET_COLUMNS,
   SET_STATE,
   SET_LOADED,
   SET_RANDOM,
@@ -24,7 +25,8 @@ const initialState = {
   active: 0,
   isLoaded: false,
   loggedIn: false,
-  randoms: ["", "", ""],
+  randoms: getRandoms(),
+  mounted: false,
 };
 
 function reorder(list, startIndex, endIndex) {

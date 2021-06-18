@@ -15,7 +15,7 @@ import {
   REORDER_IDEAS,
   ADD_COLUMN,
 } from "./action_types.js";
-import random from "../utils/randomizer";
+import getRandoms from "../utils/randomizer";
 export const setStoreState = function (data) {
   return {
     type: SET_STATE,
@@ -33,12 +33,11 @@ export const setLoaded = (loaded) => ({
 });
 
 export const setRandom = function () {
-  const randoms = [random(), random(), random()];
-  debugger;
+  const randoms = getRandoms();
   return {
     type: SET_RANDOM,
     payload: {
-      randoms,
+      randoms: randoms,
     },
   };
 };
