@@ -76,9 +76,9 @@ class App extends React.Component {
       .then(function (res) {
         if (res.success) {
           self.props.login(true);
-          self.setState({ mounted: true });
         }
       });
+    self.setState({ mounted: true });
   }
 
   componentWillUnmount() {
