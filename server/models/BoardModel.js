@@ -5,11 +5,15 @@ const ColumnSchema = new mongoose.Schema({
   data: String,
 });
 
+const IdeaSchema = new mongoose.Schema({
+	data: String,
+});
+
 
 const BoardSchema = new mongoose.Schema({
   name: String,
   columns: [ColumnSchema],
-  ideas: [String],
+  ideas: [IdeaSchema],
 });
 
 module.exports = BoardSchema;

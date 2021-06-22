@@ -25,7 +25,7 @@ class IdeasList extends React.Component {
     const ideasList = ideas.map((idea, index) => {
       const id = idea._id;
       return (
-        <Draggable key={idea + index} draggableId={idea + index} index={index}>
+        <Draggable key={id} draggableId={id} index={index}>
           {(provided, _snapshot) => {
             return (
               <div
@@ -33,7 +33,7 @@ class IdeasList extends React.Component {
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
               >
-                <Idea key={index} id={id} />
+                <Idea key={id} id={index} />
               </div>
             );
           }}

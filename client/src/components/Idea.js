@@ -1,5 +1,5 @@
 import React from "react";
-import { setIdeas } from "../redux/actions";
+import { setIdea, setIdeas } from "../redux/actions";
 import { connect } from "react-redux";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
@@ -14,9 +14,7 @@ class Idea extends React.Component {
 
   handleChange(event) {
     event.preventDefault();
-    let newIdeas = this.props.ideas;
-    newIdeas[this.props.id] = event.target.value;
-    this.props.setIdeas(newIdeas, this.props.active);
+    this.props.setIdea(this.props.id, event.target.value);
   }
 
   handleDelete(event) {
@@ -52,7 +50,7 @@ class Idea extends React.Component {
             cols="60"
             width="100%"
             height="100%"
-            value={this.props.idea}
+            value={this.props.idea.data}
             onChange={this.handleChange}
           />
         </div>
@@ -78,4 +76,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { setIdeas })(Idea);
+export default connect(mapStateToProps, { setIdea, setIdeas })(Idea);

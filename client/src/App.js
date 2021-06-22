@@ -20,6 +20,7 @@ import {
   setRandom,
   setActiveBoard,
   addColumn,
+  addIdea,
 } from "./redux/actions";
 import save from "./utils/save";
 
@@ -29,15 +30,7 @@ class App extends React.Component {
 
     // Bind methods
     this.updateRandom = this.updateRandom.bind(this);
-    this.addIdea = this.addIdea.bind(this);
     this.state = { mounted: false };
-  }
-
-  // Add idea
-  addIdea() {
-    let ideas = this.props.boards[this.props.active].ideas;
-    ideas.push("");
-    this.props.setIdeas(ideas, this.props.active);
   }
 
   getBoards() {
@@ -147,7 +140,7 @@ class App extends React.Component {
         <BoardsList />
 
         <div className="main">
-          <div className="container">
+          <div className="container-fluid">
             {/* App Title */}
             <div className="app-title">Idea Editor</div>
 
@@ -186,7 +179,7 @@ class App extends React.Component {
                 Ideas
                 <button
                   className="btn btn-primary idea-add-btn"
-                  onClick={this.addIdea}
+                  onClick={this.props.addIdea}
                 >
                   Add
                 </button>
@@ -222,4 +215,5 @@ export default connect(mapStateToProps, {
   setStoreState,
   setActiveBoard,
   addColumn,
+  addIdea,
 })(App);

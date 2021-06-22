@@ -18,6 +18,8 @@ import {
   REORDER_COLUMNS,
   REORDER_IDEAS,
   ADD_COLUMN,
+  ADD_IDEA,
+  SET_IDEA,
 } from "../action_types";
 
 const initialState = {
@@ -216,6 +218,43 @@ function main(state = initialState, action) {
         columns: { $push: [newColumn] },
       });
       const updatedBoards = update(state.boards, {
+        $splice: [[state.active, 1, updatedBoard]],
+      });
+      return {
+        ...state,
+        boards: updatedBoards,
+      };
+    }
+
+    case ADD_IDEA: {
+      const id = new ObjectID();
+      const newIdea = {
+        _id: id.toString(),
+        data: "",
+      };
+      const updatedBoard = update(state.boards[state.active], {
+        ideas: { $push: [newIdea] },
+      });
+      const updatedBoards = update(state.boards, {
+        $splice: [[state.active, 1, updatedBoard]],
+      });
+      return {
+        ...state,
+        boards: updatedBoards,
+      };
+    }
+
+    case SET_IDEA: {
+      const { index, value } = action.payload;
+      const id = state.boards[state.active].ideas[index]._id;
+      const newIdea = {
+        _id: id,
+        data: value,
+      };
+      const updatedBoard = update(state.boards[state.active], {
+        ideas: { [index]: { $set: newIdea } },
+      });
+      let updatedBoards = update(state.boards, {
         $splice: [[state.active, 1, updatedBoard]],
       });
       return {

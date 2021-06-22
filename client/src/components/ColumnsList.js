@@ -22,26 +22,44 @@ class ColumnsList extends React.Component {
     const active = this.props.active;
     const columns = this.props.boards[active].columns;
 
-    const columnsList = columns.map((column, index) => {
-      const id = column._id;
+    // Split the columns up into groups of 4
+    //
+    // The size of chunks to use
+    const chunk = 4;
+
+    let column_chunks = [];
+    for (let i = 0, j = columns.length; i < j; i += chunk) {
+      column_chunks.push(columns.slice(i, i + chunk));
+    }
+
+    const columnsList = column_chunks.map((chunk, index) => {
+      const chunkList = chunk.map((column, index) => {
+        const id = column._id;
+        return (
+          <Draggable key={id} draggableId={id} index={index}>
+            {(provided, _snapshot) => {
+              return (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  className="column"
+                  key={id}
+                >
+                  <Column id={index} key={id} />
+                </div>
+              );
+            }}
+          </Draggable>
+        );
+      });
       return (
-        <Draggable key={id} draggableId={id} index={index}>
-          {(provided, _snapshot) => {
-            return (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                className="column"
-                key={id}
-              >
-                <Column id={index} key={id} />
-              </div>
-            );
-          }}
-        </Draggable>
+        <div className="row" key={index}>
+          {chunkList}
+        </div>
       );
     });
+    console.log(columnsList);
 
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
