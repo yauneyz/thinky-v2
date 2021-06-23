@@ -27,55 +27,55 @@ class ColumnsList extends React.Component {
     // The size of chunks to use
     const chunk = 4;
 
+    // Split the list of columns into chunks
     let column_chunks = [];
     for (let i = 0, j = columns.length; i < j; i += chunk) {
       column_chunks.push(columns.slice(i, i + chunk));
     }
 
-    const columnsList = column_chunks.map((chunk, index) => {
-      const chunkList = chunk.map((column, index) => {
-        const id = column._id;
-        return (
-          <Draggable key={id} draggableId={id} index={index}>
-            {(provided, _snapshot) => {
-              return (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  className="column"
-                  key={id}
-                >
-                  <Column id={index} key={id} />
-                </div>
-              );
-            }}
-          </Draggable>
-        );
-      });
-      return (
-        <div className="row" key={index}>
-          {chunkList}
-        </div>
-      );
-    });
-    console.log(columnsList);
-
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable key={0} droppableId="columnsList" direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="columnsList"
-            >
-              {columnsList}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <div>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          {column_chunks.map((chunk, index) => (
+            <Droppable key={`${index}`} droppableId={`${index}`}>
+              {(provided, _snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="row"
+                >
+                  {chunk.map((column, index) => (
+                    <Draggable
+                      key={column._id}
+                      draggableId={column._id}
+                      index={index}
+                    >
+                      {(provided, _snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="column"
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-around",
+                            }}
+                          >
+                            <Column key={column._id} id={index} />
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </DragDropContext>
+      </div>
     );
   }
 }

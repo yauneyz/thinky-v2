@@ -32,6 +32,7 @@ class IdeasList extends React.Component {
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
+                className="row"
               >
                 <Idea key={id} id={index} />
               </div>
@@ -44,7 +45,7 @@ class IdeasList extends React.Component {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="ideasList">
-          {(provided, snapshot) => (
+          {(provided, _snapshot) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {ideasList}
               {provided.placeholder}

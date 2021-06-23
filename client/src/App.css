@@ -73,11 +73,9 @@ ul{
 .column{
 	background: #0096FF;
 	padding: 5px;
-	margin: 5px
-}
-
-.columnsList{
-	display: flex;
+	margin: 5px;
+	margin-right:10px;
+	margin-left:10px;
 }
 
 .ideas-header{
