@@ -43,15 +43,13 @@ class Idea extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ width: "100%" }}>
         <div className="col-xl idea">
           <textarea
-            rows="2"
-            cols="60"
-            width="100%"
-            height="100%"
+            rows="4"
             value={this.props.idea.data}
             onChange={this.handleChange}
+            className="idea-text-box"
           />
         </div>
         <div className="idea-delete-btn">

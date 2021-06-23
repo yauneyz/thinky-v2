@@ -64,10 +64,23 @@ ul{
 	cursor:pointer
 }
 
+.ideasList{
+	width:100%;
+}
+
 .idea{
 	background: #0096FF;
 	padding: 5px;
-	margin: 5px
+	margin: 5px;
+	box-sizing: border-box;
+	width:100%;
+}
+
+.idea-text-box{
+	width:100%;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;
 }
 
 .column{
@@ -79,7 +92,7 @@ ul{
 }
 
 .ideas-header{
-	text-aligh:center
+	text-align:center
 }
 
 .idea-delete-btn{

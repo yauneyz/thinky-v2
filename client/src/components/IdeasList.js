@@ -46,7 +46,11 @@ class IdeasList extends React.Component {
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="ideasList">
           {(provided, _snapshot) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="ideasList"
+            >
               {ideasList}
               {provided.placeholder}
             </div>
