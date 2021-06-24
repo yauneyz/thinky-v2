@@ -8,11 +8,9 @@ exports.getBoards = (async (req, res) => {
     return;
   }
 
-  console.log(`User: ${req.session.user}`);
   const currentUser =
 		await user.findOne({_id: req.session.user.userID}, 'boards active',
 		    (err, results) => {
-		      console.log(results);
 		      return;
 		    });
 
@@ -31,6 +29,7 @@ exports.updateBoards = (async (req, res) => {
   }
 
   const email = req.session.user.email;
+	console.log("Update Email: ",email);
   await user.updateOne({email: email}, {boards: req.body.boards});
   res.send('Boards updated');
 });
