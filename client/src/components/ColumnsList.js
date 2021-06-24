@@ -32,6 +32,7 @@ class ColumnsList extends React.Component {
     for (let i = 0, j = columns.length; i < j; i += chunk) {
       column_chunks.push(columns.slice(i, i + chunk));
     }
+    console.log(column_chunks);
 
     return (
       <div>
@@ -44,31 +45,34 @@ class ColumnsList extends React.Component {
                   ref={provided.innerRef}
                   className="row"
                 >
-                  {chunk.map((column, index) => (
-                    <Draggable
-                      key={column._id}
-                      draggableId={column._id}
-                      index={index}
-                    >
-                      {(provided, _snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="column"
-                        >
+                  {chunk.map((column, offset) => {
+                    const column_index = index * 4 + offset;
+                    return (
+                      <Draggable
+                        key={column._id}
+                        draggableId={column._id}
+                        index={column_index}
+                      >
+                        {(provided, _snapshot) => (
                           <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-around",
-                            }}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="column"
                           >
-                            <Column key={column._id} id={index} />
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                              }}
+                            >
+                              <Column key={column._id} id={column_index} />
+                            </div>
                           </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                        )}
+                      </Draggable>
+                    );
+                  })}
                   {provided.placeholder}
                 </div>
               )}

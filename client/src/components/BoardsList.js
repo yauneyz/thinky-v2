@@ -79,14 +79,14 @@ class BoardsList extends React.Component {
     this.setState({ renameFocus: null });
   }
 
-  confirmDelete() {
+  confirmDelete(selected) {
     confirmAlert({
       message:
         "Are you sure to delete this board? Data will be permanantly lost.",
       buttons: [
         {
           label: "Yes",
-          onClick: () => this.deleteSelectedBoard(),
+          onClick: () => this.deleteSelectedBoard(selected),
         },
         {
           label: "No",
@@ -96,8 +96,8 @@ class BoardsList extends React.Component {
     });
   }
 
-  deleteSelectedBoard() {
-    this.props.deleteBoard(this.state.selected);
+  deleteSelectedBoard(selected) {
+    this.props.deleteBoard(selected);
     this.menuClose();
     this.resetBoardNames();
   }
@@ -224,7 +224,11 @@ class BoardsList extends React.Component {
                 }
               >
                 <MenuItem onClick={this.openBoardRename}>Rename</MenuItem>
-                <MenuItem onClick={this.confirmDelete}>Delete</MenuItem>
+                <MenuItem
+                  onClick={(_event) => this.confirmDelete(this.state.selected)}
+                >
+                  Delete
+                </MenuItem>
               </Menu>
 
               {provided.placeholder}

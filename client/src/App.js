@@ -48,7 +48,7 @@ class App extends React.Component {
             // Set a timer so we don't clobber old state with new state
             // When the timer expires after 3 seconds, start saving
             setTimeout(
-              setInterval(() => save(), 100),
+              setInterval(() => save(), 3000),
               3000
             );
           }
