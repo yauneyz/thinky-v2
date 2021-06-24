@@ -10,6 +10,7 @@
     "bson": "^4.4.0",
     "dotenv": "^8.2.0",
     "mongoose": "^5.12.12",
+    "random-words": "^1.1.1",
     "react": "^17.0.1",
     "react-addons-update": "^15.6.3",
     "react-beautiful-dnd": "^13.1.0",
@@ -48,5 +49,5 @@
     "eslint": "^7.18.0",
     "prettier": "^2.2.1"
   },
-	"proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000"
 }

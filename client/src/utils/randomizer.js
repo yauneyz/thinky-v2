@@ -1,3 +1,4 @@
+import randomWord from "random-words";
 const bank = [
   "Bulbasaur",
   "Ivysaur",
@@ -813,11 +814,6 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-function random() {
-  const index = getRandomInt(bank.length);
-  return bank[index];
-}
-
 export default function getRandoms() {
-  return [random(), random(), random()];
+  return randomWord(3);
 }
