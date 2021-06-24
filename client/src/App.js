@@ -88,8 +88,6 @@ class App extends React.Component {
     if (!this.state.mounted) {
       return <div>Loading</div>;
     }
-    console.log(`Logged in: ${this.props.loggedIn}`);
-    console.log(`Loaded: ${this.props.isLoaded}`);
     // See if we are already logged in
     if (!this.props.loggedIn) {
       return (

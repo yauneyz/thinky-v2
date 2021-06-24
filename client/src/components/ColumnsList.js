@@ -32,7 +32,6 @@ class ColumnsList extends React.Component {
     for (let i = 0, j = columns.length; i < j; i += chunk) {
       column_chunks.push(columns.slice(i, i + chunk));
     }
-    console.log(column_chunks);
 
     return (
       <div>

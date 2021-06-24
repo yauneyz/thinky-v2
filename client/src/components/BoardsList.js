@@ -45,17 +45,42 @@ class BoardsList extends React.Component {
     this.props.setActiveBoard(index);
   }
 
+  getNewColumn() {
+    const id = mongoose.Types.ObjectId().toHexString();
+    const newColumn = {
+      _id: id,
+      name: "",
+      data: "",
+    };
+    return newColumn;
+  }
+
+  getNewIdea() {
+    const id = mongoose.Types.ObjectId().toHexString();
+    const newIdea = {
+      _id: id,
+      data: "",
+    };
+    return newIdea;
+  }
+
   addBoard(event) {
     event.preventDefault();
     let boards = this.props.boards;
     const newBoardIndex = boards.length;
-    const newId = mongoose.Types.ObjectId().toString();
+    const newId = mongoose.Types.ObjectId().toHexString();
     const newBoard = {
       _id: newId,
       name: "New Board",
-      columns: [],
-      ideas: [],
+      columns: [
+        this.getNewColumn(),
+        this.getNewColumn(),
+        this.getNewColumn(),
+        this.getNewColumn(),
+      ],
+      ideas: [this.getNewIdea(), this.getNewIdea(), this.getNewIdea()],
     };
+    console.log("new board: ", newBoard);
     boards.push(newBoard);
     this.props.setStoreState(boards);
     this.props.setActiveBoard(newBoardIndex);
@@ -80,6 +105,7 @@ class BoardsList extends React.Component {
   }
 
   confirmDelete(selected) {
+    this.menuClose();
     confirmAlert({
       message:
         "Are you sure to delete this board? Data will be permanantly lost.",
