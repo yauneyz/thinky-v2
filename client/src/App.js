@@ -22,7 +22,6 @@ import {
   addColumn,
   addIdea,
 } from "./redux/actions";
-import save from "./utils/save";
 
 class App extends React.Component {
   constructor(props) {
@@ -44,13 +43,6 @@ class App extends React.Component {
             this.props.setStoreState(boards);
             this.props.setActiveBoard(active);
             this.props.setLoaded(true);
-
-            // Set a timer so we don't clobber old state with new state
-            // When the timer expires after 3 seconds, start saving
-            setTimeout(
-              setInterval(() => save(), 3000),
-              3000
-            );
           }
         },
         (_error) => {
