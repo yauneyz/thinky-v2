@@ -134,6 +134,7 @@ class BoardsList extends React.Component {
 
   menuOpen(event, index) {
     event.preventDefault();
+    this.makeActive(index);
     this.setState({
       mouseX: event.clientX - 2,
       mouseY: event.clientY - 4,
