@@ -29,6 +29,6 @@ exports.updateBoards = (async (req, res) => {
   }
 
   const email = req.session.user.email;
-  await user.updateOne({email: email}, {boards: req.body.boards});
+	await user.updateOne({email: email}, {boards: req.body.boards, active:req.body.active});
   res.send('Boards updated');
 });

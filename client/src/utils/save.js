@@ -10,7 +10,7 @@ async function save() {
   if (!(state.loggedIn && state.isLoaded)) {
     return;
   }
-  const data = { boards: store.getState().boards };
+  const data = { boards: state.boards, active: state.active };
   const _res = await fetch("boards", {
     credentials: "include",
     method: "PUT",
