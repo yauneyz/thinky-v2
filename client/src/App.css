@@ -7,6 +7,8 @@ html,body, #root{
 	background: #2b2929;
 	width:100%;
 	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .wrapper2{
@@ -16,6 +18,23 @@ html,body, #root{
 
 .title-bar{
 	height: 3em;
+	display: flex;
+}
+
+.title{
+	font-size: 2em;
+	font-weight: bold;
+	margin-left: 1em;
+	color: #e9241d;
+	/*color: #878681;*/
+}
+
+.wiki{
+	color: white;
+	font-size:1em;
+	margin: 5px;
+	align-self: center;
+	margin-left: auto;
 }
 
 .node-bar{
@@ -26,17 +45,25 @@ html,body, #root{
 	align-content: center;
 }
 
-.node-list{
-}
 
 .node-item{
 	display: inline-block;
 	color: white;
-	font-size: 1.3em;
+	font-size: 0.8;
 	margin: 5px;
-	font-family: 'Montserrat';
+	font-family: 'Open Sans', sans-serif;
 	font-weight: bold;
 }
+
+.node-item:hover, .child-node:hover{
+	text-shadow: 0 0 3px #FF0000;
+}
+
+.child-node{
+	display: block;
+	margin: 8px;
+}
+
 
 .node-item:after{
 	content: " >";
@@ -51,17 +78,34 @@ html,body, #root{
 	/*border-right: 2px #910101;*/
 	border-right: 5px solid #910101;
 	border-right: 5px solid #910101;
+	justify-content: start;
+	display: flex;
+	flex-direction: column;
 }
 
 .child-list{
 	height: 100%;
-}
-
-.editor{
 	width: 100%;
-	height: 100%;
+	list-style-type: none;
+}
+.editor{
+	flex: 1;
 }
 
 .editor-box{
-	width:100%
+	width:100%;
+	display: flex;
+}
+
+.child-node{
+	color: white;
+	font-size: 1em;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: bold;
+}
+
+.add-child-button{
+	width: 50%;
+	margin: auto;
+	margin-top: 5px;
 }
