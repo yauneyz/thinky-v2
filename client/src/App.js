@@ -1,40 +1,71 @@
-import React from "react";
-import { connect } from "react-redux";
+import React, { useState, memo } from "react";
+import TitleBar from "./components/TitleBar";
+import Trail from "./components/Trail";
+import AxesList from "./components/AxesList";
+import Editors from "./components/EditorsContainer";
+import BoardsController from "./utils/BoardsController";
+import { getBoards } from "./api/boards";
+import styled from "styled-components";
+import { TrailContextProvider, OpenContextProvider } from "./contexts";
+import {
+  useQuery,
+  QueryClient,
+  useQueryClient,
+  QueryClientProvider,
+} from "react-query";
 import "./App.css";
 
-function App() {
+const queryClient = new QueryClient();
+
+// Container for the entire app
+const AppContainer = memo(styled.div`
+  margin: 0;
+  background: #2b2929;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`);
+
+// Container for everything underneath the trail bar
+const Container2 = memo(styled.div`
+  display: flex;
+  height: 100%;
+`);
+
+export function App() {
+  // Get boards data from the server
+  var { isLoading, error, data } = useQuery("boards", getBoards);
+
+  if (typeof data === "undefined") {
+    data = { name: "Home", children: [], text: "" };
+  }
+
+  // Track the state of the boards
+  const [boards, setBoards] = useState(data);
+  const BC = new BoardsController(boards, setBoards, queryClient);
+
+  if (isLoading) {
+    return "Loading";
+  }
+  if (error) {
+    return "Unable to connect to server";
+  }
+
   return (
-    <div className="wrapper">
-      <div className="title-bar">
-        <span className="title">Idea Editor</span>
-				<span className="wiki">Wiki</span>
-      </div>
-      <div className="node-bar">
-        <span className="node-item">Boards</span>
-        <span className="node-item">VR Fitness Game</span>
-        <span className="node-item">Movement Patterns</span>
-        <span className="node-item">Fighting Patterns</span>
-      </div>
-      <div className="wrapper2">
-        <div className="child-bar">
-          <span className="child-node">Boxing</span>
-          <span className="child-node">Sword Fighting</span>
-          <span className="child-node">Skilled Projectiles</span>
-          <span className="child-node">Unskilled Projectiles</span>
-          <button className="add-child-button">Add</button>
-        </div>
-        <div className="editor-box">
-          <textarea className="editor" />
-          <textarea className="editor" />
-          <textarea className="editor" />
-        </div>
-      </div>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <OpenContextProvider>
+        <TrailContextProvider>
+          <AppContainer>
+            <TitleBar />
+            <Trail BC={BC} />
+            <Container2>
+              <AxesList BC={BC} />
+              <Editors BC={BC} />
+            </Container2>
+          </AppContainer>
+        </TrailContextProvider>
+      </OpenContextProvider>
+    </QueryClientProvider>
   );
 }
-
-const mapStateToProps = (_state) => {
-  return {};
-};
-
-export default connect(mapStateToProps, {})(App);

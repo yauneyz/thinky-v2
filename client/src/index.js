@@ -1,20 +1,22 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
+import { App } from "./App";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import { Provider } from "react-redux";
-import store from "./redux/store";
-import Saver from "./utils/save";
-
-const saver = new Saver();
-store.subscribe(() => saver.save());
-
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = ReactDOM.createRoot(container);
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+root.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById("root")
+    </QueryClientProvider>
+  </React.StrictMode>
 );

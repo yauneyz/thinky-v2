@@ -4,13 +4,13 @@ exports.getBoards = (async (req, res) => {
   // // Handle non-logged in
 
   if (req.session.user == null) {
-    res.send('You must log in');
+		res.json({'success': false});
     return;
   }
 
   const currentUser =
 		await user.findOne({_id: req.session.user.userID}, 'boards active',
-		    (err, results) => {
+		    (_err, _results) => {
 		      return;
 		    });
 

@@ -80,7 +80,6 @@ class BoardsList extends React.Component {
       ],
       ideas: [this.getNewIdea(), this.getNewIdea(), this.getNewIdea()],
     };
-    console.log("new board: ", newBoard);
     boards.push(newBoard);
     this.props.setStoreState(boards);
     this.props.setActiveBoard(newBoardIndex);
