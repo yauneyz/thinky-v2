@@ -45,7 +45,6 @@ function TrailNodeList({ trail, setTrail, BC }) {
 }
 
 function backtrackTrail(index, trail, setTrail) {
-  console.log("Backtrack");
   setTrail(trail.slice(0, index));
 }
 

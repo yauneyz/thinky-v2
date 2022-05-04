@@ -1,0 +1,17 @@
+{
+
+  apiKey: "AIzaSyB0jlad9yj7rHR43v0hQtJTqdzjBio6OsA",
+
+  authDomain: "idea-editor.firebaseapp.com",
+
+  projectId: "idea-editor",
+
+  storageBucket: "idea-editor.appspot.com",
+
+  messagingSenderId: "452434726001",
+
+  appId: "1:452434726001:web:078539a5bf309268105fd0",
+
+  measurementId: "G-YGMT87FKCY"
+
+}

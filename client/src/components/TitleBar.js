@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import LogoutButton from "./LogoutButton";
 import styled from "styled-components";
 
 const TitleWrapper = memo(styled.div`
@@ -26,6 +27,7 @@ export default function TitleBar() {
     <TitleWrapper>
       <TitleText>Idea Editor</TitleText>
       <WikiText>Wiki</WikiText>
+      <LogoutButton />
     </TitleWrapper>
   );
 }

@@ -1,19 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const ColumnSchema = new mongoose.Schema({
+let BoardSchema = new mongoose.Schema({
   name: String,
-  data: String,
+  text: String,
 });
-
-const IdeaSchema = new mongoose.Schema({
-	data: String,
-});
-
-
-const BoardSchema = new mongoose.Schema({
-  name: String,
-  columns: [ColumnSchema],
-  ideas: [IdeaSchema],
-});
+BoardSchema.add({ children: [BoardSchema] });
 
 module.exports = BoardSchema;
