@@ -6,12 +6,12 @@ export default function Saver({ BC }) {
   const { trail } = useContext(TrailContext);
   const { token } = useContext(AuthContext);
 
-  useEffect(() => {
-    const boards = BC.getBoard([]);
+  const saveSeconds = 2;
 
+  useEffect(() => {
     const interval = setInterval(() => {
-      console.log("Boards Length: ", boards.children.length);
-      fetch("/auth/login", {
+      const boards = BC.getBoard([]);
+      fetch("/boards", {
         method: "POST",
         body: JSON.stringify({ open, trail, boards }),
         headers: {
@@ -19,8 +19,8 @@ export default function Saver({ BC }) {
           Authorization: "Bearer " + token,
         },
       });
-      return () => clearInterval(interval);
-    }, 10000);
+    }, saveSeconds * 1000);
+    return () => clearInterval(interval);
   });
   return <div></div>;
 }

@@ -39,35 +39,33 @@ export default function Main() {
   const { setTrail } = useContext(TrailContext);
   const { boards, setBoards } = useContext(BoardsContext);
   const [loaded, setLoaded] = useState(false);
-  const [rendered, setRendered] = useState(false);
+  const [error, setError] = useState(false);
   const BC = new BoardsController(boards, setBoards, useQueryClient());
-  const [appData, setAppData] = useState(null);
   // Get boards data from the server
-  const { isLoading, isError, data } = useQuery("boards", () =>
-    getBoards(token)
-  );
   useEffect(() => {
-    if (!isLoading) {
-      const { userBoards, userOpen, userTrail } = appData;
-      setOpen(userOpen);
-      setTrail(userTrail);
-      setBoards(userBoards);
-      console.log("UB", appData);
-      setRendered(true);
-    }
-  }, [isLoading]);
+    const getData = async () => {
+      try {
+        const data = await getBoards(token);
+        const { userOpen, userTrail, userBoards } = data;
+        setOpen(userOpen);
+        setTrail(userTrail);
+        setBoards(userBoards);
+        setLoaded(true);
+      } catch (error) {
+        console.log("Data fetch error", error);
+        setError(true);
+      }
+    };
+    getData();
+  }, []);
 
-  if (isLoading || !rendered) {
-    return "Loading";
-  }
-  if (isError) {
+  if (error) {
     return "Error retrieving data from the server";
   }
+
   if (!loaded) {
-    setLoaded(true);
-    setAppData(data);
+    return "Loading";
   }
-  console.log("Boards", boards);
 
   return (
     <AppContainer>
