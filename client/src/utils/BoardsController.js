@@ -73,6 +73,33 @@ export default class BoardsController {
     this.setBoardsState(newBoards);
   }
 
+  deleteChildHelper(coord, childIndex, draft) {
+    // Empty case
+    if (coord.length == 0) {
+      draft.children.splice(childIndex, 1);
+    } else if (coord.length == 1) {
+      // Base Case
+      draft.children[coord[0]].children.splice(childIndex, 1);
+    }
+    // If we still have nested coordinates to work through
+    else {
+      this.deleteChildHelper(
+        coord.slice(1),
+        childIndex,
+        draft.children[coord[0]]
+      );
+    }
+    return draft;
+  }
+
+  deleteChild(coord, childIndex) {
+    const newBoards = produce(this.boards, (draft) => {
+      return this.deleteChildHelper(coord, childIndex, draft);
+    });
+    this.boards = newBoards;
+    this.setBoardsState(newBoards);
+  }
+
   setBoards(coord, newVal) {
     const newBoards = this.replaceBoard(coord, newVal);
     this.boards = newBoards;

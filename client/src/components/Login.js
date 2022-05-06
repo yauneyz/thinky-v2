@@ -1,13 +1,12 @@
 import React, { useState, useContext } from "react";
 import { AuthForm, AuthLabel, AuthInput, AuthButton } from "./AuthForm";
-import { FirebaseContext, AuthContext } from "../contexts";
+import { FirebaseContext } from "../contexts";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { Auth } = useContext(FirebaseContext);
-  const { setAuth } = useContext(AuthContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();

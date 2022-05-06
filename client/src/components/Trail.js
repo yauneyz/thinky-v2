@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { TrailContext } from "../contexts";
+import { DisplayContext } from "../contexts";
 
 const TrailBar = styled.div`
   height: 3em;
@@ -49,7 +49,7 @@ function backtrackTrail(index, trail, setTrail) {
 }
 
 export default function Trail({ BC }) {
-  const { trail, setTrail } = useContext(TrailContext);
+  const { trail, setTrail } = useContext(DisplayContext);
   return (
     <TrailBar>
       <TrailNodeList trail={trail} setTrail={setTrail} BC={BC} />

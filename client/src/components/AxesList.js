@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { TrailContext, OpenContext } from "../contexts";
+import { DisplayContext } from "../contexts";
 import styled from "styled-components";
 import { produce } from "immer";
 import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
@@ -98,6 +98,7 @@ function AxisMenu({
   rename,
   drillAxis,
   openEditor,
+  deleteAxis,
 }) {
   return (
     <Menu
@@ -114,6 +115,7 @@ function AxisMenu({
       <MenuItem onClick={openEditor}>Open</MenuItem>
       <MenuItem onClick={drillAxis}>Expand</MenuItem>
       <MenuItem onClick={rename}>Rename</MenuItem>
+      <MenuItem onClick={deleteAxis}>Delete</MenuItem>
     </Menu>
   );
 }
@@ -142,27 +144,45 @@ function handleAdd(BC, trail) {
 }
 
 export default function AxesList({ BC }) {
-  const { trail, setTrail } = useContext(TrailContext);
-  const { open, setOpen } = useContext(OpenContext);
+  const { trail, setTrail, open, setOpen, tabs, setTabs } =
+    useContext(DisplayContext);
   const [mouse, setMouse] = useState({ X: null, Y: null });
   const [renameFocus, setRenameFocus] = useState(-1);
   const [menuTarget, setMenuTarget] = useState(-1);
 
   // There are the methods that power the menu options
   const openEditor = () => {
+    const newCoord = trail.concat([menuTarget]);
+
+    // If there are not tabs open, create one and add this editor to its
+
+    if (tabs.length === 0) {
+      setOpen(0);
+      setTabs([
+        {
+          name: "New Tab",
+          editors: [newCoord],
+        },
+      ]);
+      return;
+    }
+
     // Check to see if we already have this coordinate
     let uniqueCoord = true;
-    const newCoord = trail.concat([menuTarget]);
-    for (const coord of open) {
+    for (const coord of tabs[open].editors) {
       if (arrayEqual(coord, newCoord)) {
         uniqueCoord = false;
       }
     }
     if (uniqueCoord) {
-      const newOpen = produce(open, (draft) => {
+      const newTabEditors = produce(tabs[open].editors, (draft) => {
         draft.push(newCoord);
       });
-      setOpen(newOpen);
+      // Immutably update the tabs
+      const newTabs = produce(tabs, (draft) => {
+        draft[open].editors = newTabEditors;
+      });
+      setTabs(newTabs);
     }
     menuClose(setMouse, setMenuTarget);
   };
@@ -176,6 +196,29 @@ export default function AxesList({ BC }) {
     setRenameFocus(menuTarget);
     setMenuTarget(-1);
     setMouse({ X: null, Y: null });
+  };
+
+  // Deletes the axis
+  const deleteAxis = () => {
+    // Remove this axis and its children from any tabs that have it
+    const newTabs = produce(tabs, (tabsDraft) => {
+      const coord = trail.concat([menuTarget]);
+      for (const [tabIndex, tab] of tabsDraft.entries()) {
+        const newTabEditors = produce(tab.editors, (editorsDraft) => {
+          for (const [editorIndex, editor] of tab.editors.entries()) {
+            if (arrayEqual(editor, coord)) {
+              debugger;
+              editorsDraft.splice(editorIndex, 1);
+            }
+          }
+        });
+        tabsDraft[tabIndex].editors = newTabEditors;
+      }
+    });
+    setTabs(newTabs);
+
+    BC.deleteChild(trail, menuTarget);
+    menuClose(setMouse, setMenuTarget);
   };
 
   // Generate the list of axes
@@ -221,6 +264,7 @@ export default function AxesList({ BC }) {
         openEditor={openEditor}
         rename={rename}
         drillAxis={drillAxis}
+        deleteAxis={deleteAxis}
       />
     </AxesWrapper>
   );

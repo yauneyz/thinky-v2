@@ -1,18 +1,12 @@
 import React, { useState, memo, useContext, useEffect } from "react";
 import styled from "styled-components";
-import { useQuery, useQueryClient } from "react-query";
 import TitleBar from "./TitleBar";
 import Trail from "./Trail";
 import AxesList from "./AxesList";
 import Editors from "./EditorsContainer";
 import BoardsController from "../utils/BoardsController";
 import { getBoards } from "../api/boards";
-import {
-  AuthContext,
-  BoardsContext,
-  OpenContext,
-  TrailContext,
-} from "../contexts";
+import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
 import Saver from "./Saver";
 
 // Container for the entire app
@@ -35,21 +29,21 @@ export default function Main() {
   const { token } = useContext(AuthContext);
 
   // We don't want to load data until we get the token
-  const { setOpen } = useContext(OpenContext);
-  const { setTrail } = useContext(TrailContext);
+  const { setOpen, setTrail, setTabs } = useContext(DisplayContext);
   const { boards, setBoards } = useContext(BoardsContext);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
-  const BC = new BoardsController(boards, setBoards, useQueryClient());
+  const BC = new BoardsController(boards, setBoards);
   // Get boards data from the server
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await getBoards(token);
-        const { userOpen, userTrail, userBoards } = data;
+        const { userOpen, userTrail, userBoards, userTabs } = data;
         setOpen(userOpen);
         setTrail(userTrail);
         setBoards(userBoards);
+        setTabs(userTabs);
         setLoaded(true);
       } catch (error) {
         console.log("Data fetch error", error);

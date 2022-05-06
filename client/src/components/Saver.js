@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import { AuthContext, OpenContext, TrailContext } from "../contexts";
+import { AuthContext, DisplayContext } from "../contexts";
 
 export default function Saver({ BC }) {
-  const { open } = useContext(OpenContext);
-  const { trail } = useContext(TrailContext);
+  const { open, trail, tabs } = useContext(DisplayContext);
   const { token } = useContext(AuthContext);
 
   const saveSeconds = 2;
@@ -13,7 +12,7 @@ export default function Saver({ BC }) {
       const boards = BC.getBoard([]);
       fetch("/boards", {
         method: "POST",
-        body: JSON.stringify({ open, trail, boards }),
+        body: JSON.stringify({ open, trail, boards, tabs }),
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,

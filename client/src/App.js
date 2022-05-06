@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  TrailContextProvider,
-  OpenContextProvider,
   AuthContextProvider,
   FirebaseContextProvider,
   BoardsContextProvider,
+  DisplayContextProvider,
 } from "./contexts";
 import Routes from "./routes";
 import "./App.css";
@@ -14,11 +13,9 @@ export function App() {
     <FirebaseContextProvider>
       <AuthContextProvider>
         <BoardsContextProvider>
-          <OpenContextProvider>
-            <TrailContextProvider>
-              <Routes />
-            </TrailContextProvider>
-          </OpenContextProvider>
+          <DisplayContextProvider>
+            <Routes />
+          </DisplayContextProvider>
         </BoardsContextProvider>
       </AuthContextProvider>
     </FirebaseContextProvider>

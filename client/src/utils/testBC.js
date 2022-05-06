@@ -29,5 +29,3 @@ const newBoard = {
 };
 
 const bc = new BoardsController(boards, null, null);
-
-console.log(bc.replaceBoard([0], newBoard));

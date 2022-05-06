@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useContext, useState } from "react";
-import { AuthContext, FirebaseContext } from "../contexts";
+import { FirebaseContext } from "../contexts";
 import { AuthForm, AuthLabel, AuthInput, AuthButton } from "./AuthForm";
 
 function Register() {
@@ -8,7 +8,6 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { Auth } = useContext(FirebaseContext);
-  const { setAuth } = useContext(AuthContext);
 
   // The big function where we register the user
   const handleSubmit = async (event) => {
@@ -55,42 +54,6 @@ function Register() {
       });
   };
 
-  // Tell the server to create the user in their database as well
-
-  //// Create the user in firebase
-  //const userCredential = await createUserWithEmailAndPassword(
-  //Auth,
-  //email,
-  //password
-  //);
-  //console.log("credential:", userCredential);
-
-  //// Make sure they successfully logged in
-  //if (!userCredential) {
-  //alert("Invalid email/password combination.");
-  //return;
-  //}
-  //const user = userCredential.user;
-  //const uid = user.uid;
-  //console.log("UID: ", uid);
-
-  //// Log in
-  //const { setAuth } = useContext(AuthContext);
-  //setAuth(true);
-  //window.localStorage.setItem("auth", "true");
-
-  //// Tell the server to create the user in their database as well
-
-  //const data = { email, uid };
-  //fetch("/auth/register", {
-  //method: "POST",
-  //headers: {
-  //"Content-Type": "application/json",
-  //Accept: "application/json",
-  //},
-  //body: JSON.stringify(data),
-  //});
-  //};
   return (
     <AuthForm onSubmit={handleSubmit}>
       <div>

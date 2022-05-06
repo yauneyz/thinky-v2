@@ -16,25 +16,24 @@ const BoardsContextProvider = ({ children }) => {
 };
 // Track which boards are open
 
-const OpenContext = React.createContext({ open: [], setOpen: () => {} });
+const DisplayContext = React.createContext({
+  open: [],
+  setOpen: () => {},
+  trail: [],
+  setTrail: () => {},
+  tabs: [],
+  setTabs: () => {},
+});
 
-const OpenContextProvider = ({ children }) => {
-  const [open, setOpen] = useState([]);
-  const openValue = { open, setOpen };
-  return (
-    <OpenContext.Provider value={openValue}>{children}</OpenContext.Provider>
-  );
-};
-
-// Track the trail
-
-const TrailContext = React.createContext({ trail: [], setTrail: () => {} });
-
-const TrailContextProvider = ({ children }) => {
+const DisplayContextProvider = ({ children }) => {
+  const [open, setOpen] = useState(0);
   const [trail, setTrail] = useState([]);
-  const trailValue = { trail, setTrail };
+  const [tabs, setTabs] = useState([]);
+  const displayValue = { open, setOpen, trail, setTrail, tabs, setTabs };
   return (
-    <TrailContext.Provider value={trailValue}>{children}</TrailContext.Provider>
+    <DisplayContext.Provider value={displayValue}>
+      {children}
+    </DisplayContext.Provider>
   );
 };
 
@@ -102,14 +101,12 @@ const FirebaseContextProvider = ({ children }) => {
 };
 
 export {
-  TrailContextProvider,
-  TrailContext,
-  OpenContextProvider,
-  OpenContext,
   AuthContext,
   AuthContextProvider,
   FirebaseContext,
   FirebaseContextProvider,
   BoardsContext,
   BoardsContextProvider,
+  DisplayContext,
+  DisplayContextProvider,
 };
