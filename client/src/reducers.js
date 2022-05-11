@@ -1,0 +1,72 @@
+import arrayEqual from "array-equal";
+import produce from "immer";
+
+function displayReducer(state, action) {
+  const { tabs, open, trail } = state;
+  switch (action.type) {
+    // Standard actions
+    case "SET_OPEN":
+      return { ...state, open: action.open };
+    case "SET_TRAIL":
+      return { ...state, trail: action.trail };
+    case "SET_TABS":
+      return { ...state, tabs: action.tabs };
+    case "SET_STATE":
+      return action.state;
+    // Custom Actions
+    case "OPEN_EDITOR": {
+      // If no tabs are open, create one and add this editor to it
+      if (tabs.length === 0) {
+        return {
+          ...state,
+          tabs: [{ name: "New Tab", editors: [action.coord] }],
+        };
+      }
+      // Don't add the editor if the coord is already open in the current tab
+      if (
+        tabs[open].editors.find((editor) => arrayEqual(editor, action.coord))
+      ) {
+        return state;
+      }
+      // Add the editor to the current tab
+      const newTabs = produce(tabs, (draft) => {
+        draft[open].editors.push(action.coord);
+      });
+      return { ...state, tabs: newTabs };
+    }
+    case "CLOSE_EDITOR": {
+      const newTabs = produce(tabs, (draft) => {
+        draft[open].editors = draft[open].editors.filter(
+          (editor) => !arrayEqual(editor, action.coord)
+        );
+      });
+      return { ...state, tabs: newTabs };
+    }
+    case "REMOVE_AXIS": {
+      const newTabs = produce(tabs, (draft) => {
+        // Remove coord from every tab that has it
+        draft.forEach((tab) => {
+          // Remove editors corresponding to the axis
+          tab.editors = tab.editors.filter(
+            (editor) => !arrayEqual(editor, action.coord)
+          );
+          // Slide down the coordinates of every other editor
+          // Value of the last element of coord
+          const axisIndex = action.coord.length - 1;
+          const axisIndexValue = action.coord[axisIndex];
+          tab.editors.forEach((editor, index) => {
+            if (editor[axisIndex] > axisIndexValue) {
+              tab.editors[index][axisIndex]--;
+            }
+          });
+        });
+      });
+      return { ...state, tabs: newTabs };
+    }
+
+    default:
+      throw new Error("Unexpected action");
+  }
+}
+
+export { displayReducer };

@@ -16,7 +16,6 @@ exports.getBoards = async (req, res) => {
   const open = currentUser.get("open");
   const trail = currentUser.get("trail");
   const tabs = currentUser.get("tabs");
-  console.log("User", currentUser);
 
   res.json({
     userBoards: boards,

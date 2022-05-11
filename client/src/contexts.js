@@ -1,6 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useReducer } from "react";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { displayReducer } from "./reducers";
 // Track boards
 
 const BoardsContext = React.createContext({ boards: [], setBoards: () => {} });
@@ -26,10 +27,31 @@ const DisplayContext = React.createContext({
 });
 
 const DisplayContextProvider = ({ children }) => {
-  const [open, setOpen] = useState(0);
-  const [trail, setTrail] = useState([]);
-  const [tabs, setTabs] = useState([]);
-  const displayValue = { open, setOpen, trail, setTrail, tabs, setTabs };
+  const initialState = {
+    open: 0,
+    trail: [],
+    tabs: [],
+  };
+  const [state, dispatch] = useReducer(displayReducer, initialState);
+  const displayValue = {
+    // The states and setState functions
+    open: state.open,
+    setOpen: (open) => dispatch({ type: "SET_OPEN", open }),
+    trail: state.trail,
+    setTrail: (trail) => dispatch({ type: "SET_TRAIL", trail }),
+    tabs: state.tabs,
+    setTabs: (tabs) => dispatch({ type: "SET_TABS", tabs }),
+    displayState: state,
+    setDisplayState: (state) => dispatch({ type: "SET_STATE", state }),
+
+    // Custom actions
+    openEditor: (coord) => dispatch({ type: "OPEN_EDITOR", coord }),
+    closeEditor: (coord) => dispatch({ type: "CLOSE_EDITOR", coord }),
+    removeAxis: (coord) => dispatch({ type: "REMOVE_AXIS", coord }),
+    addTab: (tab) => dispatch({ type: "ADD_TAB", tab }),
+    deleteTab: (tab) => dispatch({ type: "DELETE_TAB", tab }),
+    renameTab: (tab) => dispatch({ type: "RENAME_TAB", tab }),
+  };
   return (
     <DisplayContext.Provider value={displayValue}>
       {children}

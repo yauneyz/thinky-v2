@@ -39,13 +39,9 @@ function TrailNodeList({ trail, setTrail, BC }) {
     <TrailNode
       key={index}
       name={board.name}
-      clickHandler={(_event) => backtrackTrail(index, trail, setTrail)}
+      clickHandler={() => setTrail(trail.slice(0, index))}
     />
   ));
-}
-
-function backtrackTrail(index, trail, setTrail) {
-  setTrail(trail.slice(0, index));
 }
 
 export default function Trail({ BC }) {

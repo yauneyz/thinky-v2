@@ -40,12 +40,14 @@ const DeleteButton = styled.button`
   margin-right: 10px;
 `;
 
-function EditorBase({ className, children, coord, board, BC }) {
+function EditorBase({ className, children, coord, BC }) {
   // Handles the local text changes so we don't have to update global boards that often
   // Gets its initial data from boards, but then manage it locally
-  debugger;
+  const board = BC.getBoard(coord);
+  console.log("Board", board);
+  console.log("Boards:" + board.name, BC.boards.children);
   const [text, setText] = useState(board.text);
-  const { open, tabs, setTabs } = useContext(DisplayContext);
+  const { closeEditor } = useContext(DisplayContext);
 
   const handleTextChange = (event) => {
     const newText = event.target.value;
@@ -53,18 +55,11 @@ function EditorBase({ className, children, coord, board, BC }) {
     BC.setBoardText(coord, newText);
   };
 
-  const deleteEditor = () => {
-    // Remove the editor from the open tab
-    const tabEditorIndex = tabs[open].editors.indexOf(coord);
-    const newTabs = [...tabs];
-    newTabs[open].editors.splice(tabEditorIndex, 1);
-    setTabs(newTabs);
-  };
   return (
     <div className={className}>
       <EditorTitleBar>
         <EditorTitle>{board.name}</EditorTitle>
-        <DeleteButton onClick={deleteEditor}>X</DeleteButton>
+        <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
       </EditorTitleBar>
       <EditorText value={text} onChange={(event) => handleTextChange(event)}>
         {children}
@@ -72,6 +67,7 @@ function EditorBase({ className, children, coord, board, BC }) {
     </div>
   );
 }
+
 const Editor = styled(EditorBase)`
   flex: 1;
 `;
@@ -82,15 +78,12 @@ function EditorsList({ BC, className }) {
   if (tabs.length === 0) {
     return <div className={className}></div>;
   }
+  console.log("OPEN TABS", tabs[open]);
 
   const effectiveOpen = Math.min(open, tabs.length - 1);
-  debugger;
-  console.log("Editors", tabs[effectiveOpen].editors);
   const editorsList = tabs[effectiveOpen].editors.map((coord, index) => {
-    // The board this one is referring to
-    const board = BC.getBoard(coord);
     const key = `${index}${coord.join("-")}`;
-    return <Editor key={key} coord={coord} board={board} BC={BC} />;
+    return <Editor key={key} coord={coord} BC={BC} />;
   });
   return editorsList;
 }

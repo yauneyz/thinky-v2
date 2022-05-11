@@ -97,7 +97,7 @@ function AxisMenu({
   setMenuTarget,
   rename,
   drillAxis,
-  openEditor,
+  openAxis,
   deleteAxis,
 }) {
   return (
@@ -112,7 +112,7 @@ function AxisMenu({
           : undefined
       }
     >
-      <MenuItem onClick={openEditor}>Open</MenuItem>
+      <MenuItem onClick={openAxis}>Open</MenuItem>
       <MenuItem onClick={drillAxis}>Expand</MenuItem>
       <MenuItem onClick={rename}>Rename</MenuItem>
       <MenuItem onClick={deleteAxis}>Delete</MenuItem>
@@ -144,46 +144,16 @@ function handleAdd(BC, trail) {
 }
 
 export default function AxesList({ BC }) {
-  const { trail, setTrail, open, setOpen, tabs, setTabs } =
+  const { trail, setTrail, tabs, setTabs, openEditor, removeAxis } =
     useContext(DisplayContext);
   const [mouse, setMouse] = useState({ X: null, Y: null });
   const [renameFocus, setRenameFocus] = useState(-1);
   const [menuTarget, setMenuTarget] = useState(-1);
 
   // There are the methods that power the menu options
-  const openEditor = () => {
+  const openAxis = () => {
     const newCoord = trail.concat([menuTarget]);
-
-    // If there are not tabs open, create one and add this editor to its
-
-    if (tabs.length === 0) {
-      setOpen(0);
-      setTabs([
-        {
-          name: "New Tab",
-          editors: [newCoord],
-        },
-      ]);
-      return;
-    }
-
-    // Check to see if we already have this coordinate
-    let uniqueCoord = true;
-    for (const coord of tabs[open].editors) {
-      if (arrayEqual(coord, newCoord)) {
-        uniqueCoord = false;
-      }
-    }
-    if (uniqueCoord) {
-      const newTabEditors = produce(tabs[open].editors, (draft) => {
-        draft.push(newCoord);
-      });
-      // Immutably update the tabs
-      const newTabs = produce(tabs, (draft) => {
-        draft[open].editors = newTabEditors;
-      });
-      setTabs(newTabs);
-    }
+    openEditor(newCoord);
     menuClose(setMouse, setMenuTarget);
   };
 
@@ -200,23 +170,8 @@ export default function AxesList({ BC }) {
 
   // Deletes the axis
   const deleteAxis = () => {
-    // Remove this axis and its children from any tabs that have it
-    const newTabs = produce(tabs, (tabsDraft) => {
-      const coord = trail.concat([menuTarget]);
-      for (const [tabIndex, tab] of tabsDraft.entries()) {
-        const newTabEditors = produce(tab.editors, (editorsDraft) => {
-          for (const [editorIndex, editor] of tab.editors.entries()) {
-            if (arrayEqual(editor, coord)) {
-              debugger;
-              editorsDraft.splice(editorIndex, 1);
-            }
-          }
-        });
-        tabsDraft[tabIndex].editors = newTabEditors;
-      }
-    });
-    setTabs(newTabs);
-
+    const targetCoord = trail.concat([menuTarget]);
+    removeAxis(targetCoord);
     BC.deleteChild(trail, menuTarget);
     menuClose(setMouse, setMenuTarget);
   };
@@ -261,7 +216,7 @@ export default function AxesList({ BC }) {
         mouse={mouse}
         setMouse={setMouse}
         setMenuTarget={setMenuTarget}
-        openEditor={openEditor}
+        openAxis={openAxis}
         rename={rename}
         drillAxis={drillAxis}
         deleteAxis={deleteAxis}

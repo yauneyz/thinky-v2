@@ -26,24 +26,32 @@ const Container2 = memo(styled.div`
 `);
 
 export default function Main() {
+  // Check for authentication
   const { token } = useContext(AuthContext);
+  //console.log(token);
 
-  // We don't want to load data until we get the token
-  const { setOpen, setTrail, setTabs } = useContext(DisplayContext);
+  // The application state
+  const { setDisplayState } = useContext(DisplayContext);
   const { boards, setBoards } = useContext(BoardsContext);
+
+  // Make sure we load properly before proceeding
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+
   const BC = new BoardsController(boards, setBoards);
+
   // Get boards data from the server
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await getBoards(token);
         const { userOpen, userTrail, userBoards, userTabs } = data;
-        setOpen(userOpen);
-        setTrail(userTrail);
         setBoards(userBoards);
-        setTabs(userTabs);
+        setDisplayState({
+          open: userOpen,
+          trail: userTrail,
+          tabs: userTabs,
+        });
         setLoaded(true);
       } catch (error) {
         console.log("Data fetch error", error);
