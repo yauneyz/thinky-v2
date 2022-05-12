@@ -33,10 +33,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.disable("x-powered-by");
 
-// Session stuff
-app.use(cookieParser());
-app.use(session({ secret: process.env.SESS_SECRET }));
-
 // Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
