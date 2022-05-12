@@ -6,10 +6,11 @@
   "scripts": {
     "build": "tsc",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
-    "start": "nodemon server.js",
+    "start": "node server.js",
+		"start-dev": "nodemon server.js",
     "client": "cd client && npm start",
     "test": "jest",
-    "develop": "concurrently --kill-others-on-fail \"npm run start\" \"npm run client\"",
+    "develop": "concurrently --kill-others-on-fail \"npm run start-dev\" \"npm run client\"",
     "lint:eslint": "eslint --ignore-path .gitignore --ext .ts",
     "lint:js": "npm run lint:eslint src/",
     "lint:fix": "npm run lint:js -- --fix"
