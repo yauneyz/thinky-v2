@@ -17,17 +17,22 @@ const EditorsContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex-wrap: wrap;
 `;
 
 const EditorText = styled.textarea`
   width: 100%;
-  height: 100%;
+  //height: 100%;
+  height: calc(100% - 24px);
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 `;
 
 const EditorTitleBar = styled.div`
   display: flex;
   justify-content: center;
+  height: 1.5em;
 `;
 
 const EditorTitle = styled.div`
@@ -69,6 +74,7 @@ function EditorBase({ className, children, coord, BC }) {
 
 const Editor = styled(EditorBase)`
   flex: 1;
+  min-width: 25em;
 `;
 
 function EditorsList({ BC, className }) {
