@@ -3,7 +3,6 @@ import { DisplayContext } from "../contexts";
 import styled from "styled-components";
 import { produce } from "immer";
 import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
-import arrayEqual from "array-equal";
 
 const AxesWrapper = styled.div`
   width: 14em;
@@ -74,7 +73,7 @@ function updateBoardName(event, index, trail, BC) {
   const newBoard = produce(targetBoard, (draft) => {
     draft.name = event.target.value;
   });
-  BC.setBoards(targetCoord, newBoard);
+  BC.replaceBoard(targetCoord, newBoard);
 }
 
 function finishRename(setRenameFocus, setMouse, setMenuTarget) {

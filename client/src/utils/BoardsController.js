@@ -1,23 +1,19 @@
 import { produce } from "immer";
 
 export default class BoardsController {
-  constructor(boards, setBoardsState, queryClient) {
+  constructor(boards, setBoards) {
     this.boards = boards;
-    this.setBoardsState = setBoardsState;
-    this.queryClient = queryClient;
+    this.setBoards = setBoards;
     this.getBoard = this.getBoard.bind(this);
     this.replaceBoardHelper = this.replaceBoardHelper.bind(this);
     this.replaceBoard = this.replaceBoard.bind(this);
+    this.replaceBoardInternal = this.replaceBoardInternal.bind(this);
     this.addChildHelper = this.addChildHelper.bind(this);
     this.addChild = this.addChild.bind(this);
-    this.setBoards = this.setBoards.bind(this);
     this.setBoardText = this.setBoardText.bind(this);
   }
 
-  getText() {
-    return "Hello There";
-  }
-
+  // Returns the board at the given coordinate
   getBoard(coord) {
     let current = this.boards;
     for (const i of coord) {
@@ -44,7 +40,16 @@ export default class BoardsController {
     return draft;
   }
 
+  // Replaces the board at the given coordinate with the new board, updating the state with the result
   replaceBoard(coord, newBoard) {
+    const replacementBoard = produce(this.boards, (draft) =>
+      this.replaceBoardHelper(coord, newBoard, draft)
+    );
+    this.setBoards(newBoard);
+  }
+
+  // Replaces the board at the given coordinate with the new board, returning the result
+  replaceBoardInternal(coord, newBoard) {
     return produce(this.boards, (draft) =>
       this.replaceBoardHelper(coord, newBoard, draft)
     );
@@ -65,12 +70,13 @@ export default class BoardsController {
     return draft;
   }
 
+  // Adds a child to the board at the given coordinate
   addChild(coord, newBoard) {
     const newBoards = produce(this.boards, (draft) =>
       this.addChildHelper(coord, newBoard, draft)
     );
     this.boards = newBoards;
-    this.setBoardsState(newBoards);
+    this.setBoards(newBoards);
   }
 
   deleteChildHelper(coord, childIndex, draft) {
@@ -92,25 +98,21 @@ export default class BoardsController {
     return draft;
   }
 
+  // Deletes the board at the given coordinate
   deleteChild(coord, childIndex) {
     const newBoards = produce(this.boards, (draft) => {
       return this.deleteChildHelper(coord, childIndex, draft);
     });
     this.boards = newBoards;
-    this.setBoardsState(newBoards);
+    this.setBoards(newBoards);
   }
 
-  setBoards(coord, newVal) {
-    const newBoards = this.replaceBoard(coord, newVal);
-    this.boards = newBoards;
-    this.setBoardsState(newBoards);
-  }
-
+  // Sets the text of the board at the given coordinate
   setBoardText(coord, newText) {
     const newBoard = produce(this.getBoard(coord), (draft) => {
       draft.text = newText;
     });
-    const newBoards = this.replaceBoard(coord, newBoard);
-    this.boards = newBoards;
+    const newBoards = this.replaceBoardInternal(coord, newBoard);
+    this.setBoards(newBoards);
   }
 }

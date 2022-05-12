@@ -44,14 +44,10 @@ function EditorBase({ className, children, coord, BC }) {
   // Handles the local text changes so we don't have to update global boards that often
   // Gets its initial data from boards, but then manage it locally
   const board = BC.getBoard(coord);
-  console.log("Board", board);
-  console.log("Boards:" + board.name, BC.boards.children);
-  const [text, setText] = useState(board.text);
   const { closeEditor } = useContext(DisplayContext);
 
   const handleTextChange = (event) => {
     const newText = event.target.value;
-    setText(newText);
     BC.setBoardText(coord, newText);
   };
 
@@ -61,7 +57,10 @@ function EditorBase({ className, children, coord, BC }) {
         <EditorTitle>{board.name}</EditorTitle>
         <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
       </EditorTitleBar>
-      <EditorText value={text} onChange={(event) => handleTextChange(event)}>
+      <EditorText
+        value={board.text}
+        onChange={(event) => handleTextChange(event)}
+      >
         {children}
       </EditorText>
     </div>
@@ -78,7 +77,6 @@ function EditorsList({ BC, className }) {
   if (tabs.length === 0) {
     return <div className={className}></div>;
   }
-  console.log("OPEN TABS", tabs[open]);
 
   const effectiveOpen = Math.min(open, tabs.length - 1);
   const editorsList = tabs[effectiveOpen].editors.map((coord, index) => {
