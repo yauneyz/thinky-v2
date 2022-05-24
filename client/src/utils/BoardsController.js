@@ -45,7 +45,7 @@ export default class BoardsController {
     const replacementBoard = produce(this.boards, (draft) =>
       this.replaceBoardHelper(coord, newBoard, draft)
     );
-    this.setBoards(newBoard);
+    this.setBoards(replacementBoard);
   }
 
   // Replaces the board at the given coordinate with the new board, returning the result
