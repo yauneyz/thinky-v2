@@ -5,6 +5,7 @@ const firebasePrivateKey = process.env.FIREBASE_PRIVATE_KEY.replace(
   /\\\\n/g,
   "\n"
 );
+console.log(firebasePrivateKey);
 
 // Convert string to json and unescape newlines and quotes
 const authKey = {
