@@ -64,6 +64,36 @@ function displayReducer(state, action) {
       return { ...state, tabs: newTabs };
     }
 
+    case "RENAME_TAB":
+      return {
+        ...state,
+        tabs: produce(tabs, (draft) => {
+          draft[action.index].name = action.name;
+        }),
+      };
+
+    case "MOVE_TAB":
+      return {
+        ...state,
+        tabs: produce(tabs, (draft) => {
+          const tab = draft[action.dragIndex];
+          draft.splice(action.dragIndex, 1);
+          draft.splice(action.hoverIndex, 0, tab);
+        }),
+        open: action.hoverIndex,
+      };
+
+    case "MOVE_EDITOR":
+      return {
+        ...state,
+        tabs: produce(tabs, (draft) => {
+          const tab = draft[open];
+          const editor = tab.editors[action.dragIndex];
+          tab.editors.splice(action.dragIndex, 1);
+          tab.editors.splice(action.hoverIndex, 0, editor);
+        }),
+      };
+
     default:
       throw new Error("Unexpected action");
   }

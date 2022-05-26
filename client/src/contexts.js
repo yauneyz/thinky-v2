@@ -50,7 +50,11 @@ const DisplayContextProvider = ({ children }) => {
     removeAxis: (coord) => dispatch({ type: "REMOVE_AXIS", coord }),
     addTab: (tab) => dispatch({ type: "ADD_TAB", tab }),
     deleteTab: (tab) => dispatch({ type: "DELETE_TAB", tab }),
-    renameTab: (tab) => dispatch({ type: "RENAME_TAB", tab }),
+    renameTab: (index, name) => dispatch({ type: "RENAME_TAB", index, name }),
+    moveTab: (dragIndex, hoverIndex) =>
+      dispatch({ type: "MOVE_TAB", dragIndex, hoverIndex }),
+    moveEditor: (dragIndex, hoverIndex) =>
+      dispatch({ type: "MOVE_EDITOR", dragIndex, hoverIndex }),
   };
   return (
     <DisplayContext.Provider value={displayValue}>

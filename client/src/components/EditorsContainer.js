@@ -1,8 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DisplayContext } from "../contexts";
 import styled from "styled-components";
 import arrayEquals from "array-equal";
+import { useDrag, useDrop } from "react-dnd";
+import { ItemTypes } from "../constants";
 import TabBar from "./TabBar";
 
 // Styled component with column flex layout
@@ -45,7 +47,7 @@ const DeleteButton = styled.button`
   margin-right: 10px;
 `;
 
-function EditorBase({ className, children, coord, BC }) {
+function EditorBase({ className, children, coord, BC, index }) {
   // Handles the local text changes so we don't have to update global boards that often
   // Gets its initial data from boards, but then manage it locally
   const board = BC.getBoard(coord);
@@ -56,8 +58,65 @@ function EditorBase({ className, children, coord, BC }) {
     BC.setBoardText(coord, newText);
   };
 
+  // Drag and drop
+  const ref = useRef(null);
+  const { moveEditor } = useContext(DisplayContext);
+  const [{ handlerId }, drop] = useDrop({
+    accept: ItemTypes.EDITOR,
+    collect(monitor) {
+      return {
+        handlerId: monitor.handlerId,
+      };
+    },
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragIndex = item.index;
+      const hoverIndex = index;
+      // Don't replace items with themselves
+      if (dragIndex === hoverIndex) {
+        return;
+      }
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+      // Get pixels to the top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      // Time to actually perform the action
+      moveEditor(dragIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemTypes.EDITOR,
+    item: () => {
+      return { index };
+    },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+  drag(drop(ref));
+  const opacity = isDragging ? 0.5 : 1;
+
   return (
-    <div className={className}>
+    <div ref={ref} style={{ opacity }} className={className}>
       <EditorTitleBar>
         <EditorTitle>{board.name}</EditorTitle>
         <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
@@ -87,7 +146,7 @@ function EditorsList({ BC, className }) {
   const effectiveOpen = Math.min(open, tabs.length - 1);
   const editorsList = tabs[effectiveOpen].editors.map((coord, index) => {
     const key = `${index}${coord.join("-")}`;
-    return <Editor key={key} coord={coord} BC={BC} />;
+    return <Editor key={key} coord={coord} BC={BC} index={index} />;
   });
   return editorsList;
 }
