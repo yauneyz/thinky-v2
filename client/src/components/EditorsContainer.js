@@ -116,8 +116,8 @@ function EditorBase({ className, children, coord, BC, index }) {
   const opacity = isDragging ? 0.5 : 1;
 
   return (
-    <div ref={ref} style={{ opacity }} className={className}>
-      <EditorTitleBar>
+    <div style={{ opacity }} className={className}>
+      <EditorTitleBar ref={ref}>
         <EditorTitle>{board.name}</EditorTitle>
         <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
       </EditorTitleBar>
