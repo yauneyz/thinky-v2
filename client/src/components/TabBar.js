@@ -47,7 +47,6 @@ function TabButtonBase({
     renameTab(e);
   };
   const handleDoubleClick = () => {
-    console.log("double click");
     setEditable(true);
   };
   const handleBlur = () => {
@@ -55,7 +54,6 @@ function TabButtonBase({
     setEditable(false);
   };
   const handleKeyDown = (e) => {
-    console.log(e.key);
     if (e.key === "Enter" || e.key === "Escape") {
       setEditable(false);
     }

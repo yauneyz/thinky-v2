@@ -15,6 +15,7 @@ function displayReducer(state, action) {
       return action.state;
     // Custom Actions
     case "OPEN_EDITOR": {
+      console.log("OPEN_EDITOR");
       // If no tabs are open, create one and add this editor to it
       if (tabs.length === 0) {
         return {

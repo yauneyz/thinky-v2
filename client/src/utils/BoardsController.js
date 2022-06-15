@@ -42,14 +42,21 @@ export default class BoardsController {
 
   // Replaces the board at the given coordinate with the new board, updating the state with the result
   replaceBoard(coord, newBoard) {
-    const replacementBoard = produce(this.boards, (draft) =>
-      this.replaceBoardHelper(coord, newBoard, draft)
-    );
-    this.setBoards(replacementBoard);
+    if (coord.length == 0) {
+      this.setBoards(newBoard);
+    } else {
+      const replacementBoard = produce(this.boards, (draft) =>
+        this.replaceBoardHelper(coord, newBoard, draft)
+      );
+      this.setBoards(replacementBoard);
+    }
   }
 
   // Replaces the board at the given coordinate with the new board, returning the result
   replaceBoardInternal(coord, newBoard) {
+    if (coord.length == 0) {
+      return newBoard;
+    }
     return produce(this.boards, (draft) =>
       this.replaceBoardHelper(coord, newBoard, draft)
     );
@@ -111,6 +118,15 @@ export default class BoardsController {
   setBoardText(coord, newText) {
     const newBoard = produce(this.getBoard(coord), (draft) => {
       draft.text = newText;
+    });
+    const newBoards = this.replaceBoardInternal(coord, newBoard);
+    this.setBoards(newBoards);
+  }
+
+  // Toggles the expanded property of a board
+  toggleExpanded(coord) {
+    const newBoard = produce(this.getBoard(coord), (draft) => {
+      draft.expanded = !draft.expanded;
     });
     const newBoards = this.replaceBoardInternal(coord, newBoard);
     this.setBoards(newBoards);

@@ -3,6 +3,7 @@ import { DisplayContext } from "../contexts";
 import styled from "styled-components";
 import { produce } from "immer";
 import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
+import AxisNode from "./AxisNode";
 
 const AxesWrapper = styled.div`
   width: 14em;
@@ -17,7 +18,6 @@ const AxesUL = styled.div`
   width: 100%;
   padding-left: 5px;
 `;
-
 function AxisLIBase({ className, children, index, setMouse, setMenuTarget }) {
   return (
     <div
@@ -135,6 +135,7 @@ const newBoard = {
   name: "New Axis",
   children: [],
   text: "",
+  expanded: false,
 };
 
 //Function to handle adding to the list
@@ -143,82 +144,35 @@ function handleAdd(BC, trail) {
 }
 
 export default function AxesList({ BC }) {
-  const { trail, setTrail, tabs, setTabs, openEditor, removeAxis } =
-    useContext(DisplayContext);
-  const [mouse, setMouse] = useState({ X: null, Y: null });
-  const [renameFocus, setRenameFocus] = useState(-1);
-  const [menuTarget, setMenuTarget] = useState(-1);
+  const [selected, setSetlected] = useState(null);
+  const [topNode, setTopNode] = useState([]);
 
-  // There are the methods that power the menu options
-  const openAxis = () => {
-    const newCoord = trail.concat([menuTarget]);
-    openEditor(newCoord);
-    menuClose(setMouse, setMenuTarget);
+  const zoomIn = (coord) => {
+    setTopNode(coord);
   };
 
-  const drillAxis = () => {
-    setTrail(trail.concat([menuTarget]));
-    menuClose(setMouse, setMenuTarget);
+  const zoomOut = () => {
+    setTopNode(topNode.slice(0, -1));
   };
 
-  const rename = () => {
-    setRenameFocus(menuTarget);
-    setMenuTarget(-1);
-    setMouse({ X: null, Y: null });
-  };
-
-  // Deletes the axis
-  const deleteAxis = () => {
-    const targetCoord = trail.concat([menuTarget]);
-    removeAxis(targetCoord);
-    BC.deleteChild(trail, menuTarget);
-    menuClose(setMouse, setMenuTarget);
+  const zoomOutAll = () => {
+    setTopNode([]);
   };
 
   // Generate the list of axes
-  const axesList = BC.getBoard(trail).children.map((board, index) => {
-    if (renameFocus == index) {
-      // Handle case when we are renaming this one
-
-      return (
-        <AxisRenameInput
-          key={index}
-          index={index}
-          setRenameFocus={setRenameFocus}
-          setMouse={setMouse}
-          setMenuTarget={setMenuTarget}
-          trail={trail}
-          BC={BC}
-        />
-      );
-    } else {
-      //The normal case
-
-      return (
-        <AxisLI
-          key={index}
-          index={index}
-          setMouse={setMouse}
-          setMenuTarget={setMenuTarget}
-        >
-          {board.name}
-        </AxisLI>
-      );
-    }
-  });
-
+  const topBoard = BC.getBoard(topNode);
   return (
     <AxesWrapper>
-      <AddButton onClick={() => handleAdd(BC, trail)}>Add Axis</AddButton>
-      <AxesUL>{axesList}</AxesUL>
-      <AxisMenu
-        mouse={mouse}
-        setMouse={setMouse}
-        setMenuTarget={setMenuTarget}
-        openAxis={openAxis}
-        rename={rename}
-        drillAxis={drillAxis}
-        deleteAxis={deleteAxis}
+      <AxisNode
+        selected={selected}
+        setSetlected={setSetlected}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        zoomOutAll={zoomOutAll}
+        board={topBoard}
+        indent={0}
+        BC={BC}
+        coord={topNode}
       />
     </AxesWrapper>
   );
