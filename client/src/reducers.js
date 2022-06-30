@@ -15,7 +15,6 @@ function displayReducer(state, action) {
       return action.state;
     // Custom Actions
     case "OPEN_EDITOR": {
-      console.log("OPEN_EDITOR");
       // If no tabs are open, create one and add this editor to it
       if (tabs.length === 0) {
         return {
@@ -43,24 +42,14 @@ function displayReducer(state, action) {
       });
       return { ...state, tabs: newTabs };
     }
-    case "REMOVE_AXIS": {
+    // Closes all editors whose coordinates contain the given coord
+    case "DELETE_AXIS": {
+      const targetCoord = action.coord;
       const newTabs = produce(tabs, (draft) => {
-        // Remove coord from every tab that has it
-        draft.forEach((tab) => {
-          // Remove editors corresponding to the axis
-          tab.editors = tab.editors.filter(
-            (editor) => !arrayEqual(editor, action.coord)
-          );
-          // Slide down the coordinates of every other editor
-          // Value of the last element of coord
-          const axisIndex = action.coord.length - 1;
-          const axisIndexValue = action.coord[axisIndex];
-          tab.editors.forEach((editor, index) => {
-            if (editor[axisIndex] > axisIndexValue) {
-              tab.editors[index][axisIndex]--;
-            }
-          });
-        });
+        draft[open].editors = draft[open].editors.filter(
+          (editor) =>
+            !arrayEqual(editor.slice(0, targetCoord.length), action.coord)
+        );
       });
       return { ...state, tabs: newTabs };
     }

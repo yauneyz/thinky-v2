@@ -11,6 +11,7 @@ const AxesWrapper = styled.div`
   justify-content: start;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 `;
 
 const AxesUL = styled.div`
@@ -138,6 +139,25 @@ const newBoard = {
   expanded: false,
 };
 
+const AxesListMenu = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 1em;
+  margin-bottom: 2px;
+  background: red;
+`;
+
+const ZoomOutButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  margin: 0;
+`;
+
 //Function to handle adding to the list
 function handleAdd(BC, trail) {
   BC.addChild(trail, newBoard);
@@ -163,6 +183,9 @@ export default function AxesList({ BC }) {
   const topBoard = BC.getBoard(topNode);
   return (
     <AxesWrapper>
+      <AxesListMenu>
+        <ZoomOutButton onClick={zoomOut}>Zoom Out</ZoomOutButton>
+      </AxesListMenu>
       <AxisNode
         selected={selected}
         setSetlected={setSetlected}

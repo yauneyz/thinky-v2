@@ -5,25 +5,37 @@ import NewBoard from "../utils/NewBoard";
 import TransparentButton from "../utils/TransparentButton";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 // Import small plus
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { Menu, MenuItem, ClickAwayListener } from "@mui/material";
 
 function ArrowBase({ className, toggleExpanded }) {
   return <div className={className} onClick={toggleExpanded}></div>;
 }
 
 const Arrow = styled(ArrowBase)`
-  border: solid black;
-  border-width: 0 3px 3px 0;
+  width: 7px;
+  height: 7px;
+  margin: 3.5px;
+  background: #ff0000;
   display: inline-block;
   padding: 3px;
-  margin-right: 0.3rem;
-  border-color: white;
-  transform: rotate(${({ expanded }) => (expanded ? -45 : 45)}deg);
+  float: left;
+  margin-right: 0.5rem;
+  transform: rotate(${({ expanded }) => (expanded ? 225 : 135)}deg);
   transition: transform 0.2s ease-in-out;
   &:hover {
     cursor: pointer;
-    transform: rotate(${({ expanded }) => (expanded ? -45 : 45)}deg);
+    transform: rotate(${({ expanded }) => (expanded ? 225 : 135)}deg);
     box-shadow: 0 0 0 1px red;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 7px;
+    height: 7px;
+    background: white;
   }
 `;
 
@@ -31,15 +43,34 @@ const AxisTitle = styled.span`
   display: inline-block;
   color: white;
   cursor: pointer;
-  margin-right: 1rem;
   &:hover {
     color: #0066ff;
   }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 8em;
 `;
 
 const AxisNodeContainer = styled.div`
   // Margin based on the indent prop
-  margin-left: ${({ indent }) => 0.2 + indent * 0.5}rem;
+  margin: 0 0 0 ${({ indent }) => 0.2 + indent * 0.5}rem;
+  padding: 0;
+  display: flex;
+`;
+
+const RenameInput = styled.input`
+  border: none;
+  background: transparent;
+  color: white;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
+  font: inherit;
 `;
 
 const AxisNodeBase = ({
@@ -53,23 +84,70 @@ const AxisNodeBase = ({
   coord,
   BC,
 }) => {
-  const { openEditor } = useContext(DisplayContext);
+  const [hover, setHover] = useState(false);
+  const [editable, setEditable] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [mouse, setMouse] = useState({ X: null, Y: null });
+  const { openEditor, deleteAxis } = useContext(DisplayContext);
 
   const handleToggle = () => {
     BC.toggleExpanded(coord);
   };
 
-  // Button with a "+" icon for adding a new axis on click
-  const AddButton = () => {
+  const renameHandleKeyDown = (e) => {
+    // Escape rename editing
+    if (editable && (e.key === "Enter" || e.key === "Escape")) {
+      setEditable(false);
+    }
+  };
+
+  const treeKeyCommands = (e) => {
+    // All the tree commands
+    if (hover) {
+      // Zoom in
+      if (e.key === "z") {
+        zoomIn(coord);
+      }
+
+      // Add a new node
+      if (e.key === "a") {
+        BC.addChild(coord, NewBoard);
+      }
+
+      // Open the editor
+      if (e.key === "q") {
+        openEditor(coord);
+      }
+    }
+  };
+
+  const NodeMenu = () => {
+    const handleClose = () => {
+      setMenuOpen(false);
+      setMouse({ X: null, Y: null });
+    };
+
+    const deleteNode = () => {
+      deleteAxis(coord);
+      BC.deleteBoard(coord);
+      handleClose();
+    };
+
     return (
-      <TransparentButton
-        className="btn btn-sm btn-outline-primary"
-        onClick={() => {
-          BC.addChild(coord, NewBoard);
-        }}
-      >
-        <Icon icon={faPlus} size="s" inverse />
-      </TransparentButton>
+      <div>
+        <Menu
+          open={menuOpen}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            mouse.Y !== null && mouse.X !== null
+              ? { top: mouse.Y, left: mouse.X }
+              : undefined
+          }
+        >
+          {coord.length > 0 && <MenuItem onClick={deleteNode}>Delete</MenuItem>}
+        </Menu>
+      </div>
     );
   };
 
@@ -77,18 +155,51 @@ const AxisNodeBase = ({
     <div>
       {/* Display the axis itself */}
 
-      <AxisNodeContainer indent={indent}>
+      <AxisNodeContainer
+        indent={indent}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => {
+          if (!editable) {
+            setHover(false);
+          }
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setMouse({ X: e.clientX, Y: e.clientY });
+          setMenuOpen(true);
+        }}
+      >
         <Arrow expanded={board.expanded} toggleExpanded={handleToggle} />
-        <AxisTitle
-          onDoubleClick={() => {
-            console.log("Open");
-            openEditor(coord);
-          }}
-        >
-          {board.name}
-        </AxisTitle>
-        <AddButton />
+        {editable ? (
+          <RenameInput
+            autoFocus
+            onFocus={(event) => {
+              event.target.select();
+            }}
+            type="text"
+            value={board.name}
+            onChange={(e) => {
+              BC.renameBoard(coord, e.target.value);
+            }}
+            onBlur={() => {
+              setEditable(false);
+              setHover(false);
+            }}
+            onKeyDown={renameHandleKeyDown}
+          />
+        ) : (
+          <AxisTitle
+            onDoubleClick={() => {
+              setEditable(true);
+            }}
+            tabIndex={0}
+            onKeyDown={treeKeyCommands}
+          >
+            {board.name}
+          </AxisTitle>
+        )}
       </AxisNodeContainer>
+      <NodeMenu />
 
       {/* The children for this axis */}
 

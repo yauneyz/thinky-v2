@@ -6,7 +6,7 @@ const newBoard = {
   name: "New Axis",
   children: [],
   text: "",
-  expanded: false,
+  expanded: true,
 };
 
 export default newBoard;

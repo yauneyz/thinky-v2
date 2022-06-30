@@ -47,7 +47,7 @@ const DisplayContextProvider = ({ children }) => {
     // Custom actions
     openEditor: (coord) => dispatch({ type: "OPEN_EDITOR", coord }),
     closeEditor: (coord) => dispatch({ type: "CLOSE_EDITOR", coord }),
-    removeAxis: (coord) => dispatch({ type: "REMOVE_AXIS", coord }),
+    deleteAxis: (coord) => dispatch({ type: "DELETE_AXIS", coord }),
     addTab: (tab) => dispatch({ type: "ADD_TAB", tab }),
     deleteTab: (tab) => dispatch({ type: "DELETE_TAB", tab }),
     renameTab: (index, name) => dispatch({ type: "RENAME_TAB", index, name }),

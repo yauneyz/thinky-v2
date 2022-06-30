@@ -11,6 +11,8 @@ export default class BoardsController {
     this.addChildHelper = this.addChildHelper.bind(this);
     this.addChild = this.addChild.bind(this);
     this.setBoardText = this.setBoardText.bind(this);
+    this.deleteBoard = this.deleteBoard.bind(this);
+    this.renameBoard = this.renameBoard.bind(this);
   }
 
   // Returns the board at the given coordinate
@@ -127,6 +129,20 @@ export default class BoardsController {
   toggleExpanded(coord) {
     const newBoard = produce(this.getBoard(coord), (draft) => {
       draft.expanded = !draft.expanded;
+    });
+    const newBoards = this.replaceBoardInternal(coord, newBoard);
+    this.setBoards(newBoards);
+  }
+
+  // Deletes a board at the given coordinate
+  deleteBoard(coord) {
+    this.deleteChild(coord.slice(0, coord.length - 1), coord[coord.length - 1]);
+  }
+
+  // Rename a board
+  renameBoard(coord, newName) {
+    const newBoard = produce(this.getBoard(coord), (draft) => {
+      draft.name = newName;
     });
     const newBoards = this.replaceBoardInternal(coord, newBoard);
     this.setBoards(newBoards);
