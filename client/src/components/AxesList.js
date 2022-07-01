@@ -122,7 +122,6 @@ const AxesMenuButton = styled.button`
 export default function AxesList({ BC }) {
   const [selected, setSetlected] = useState(null);
   const { topNode, setTopNode } = useContext(DisplayContext);
-  console.log("AxesList", topNode);
 
   const zoomIn = (coord) => {
     setTopNode(coord);
