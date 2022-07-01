@@ -5,6 +5,13 @@ import { produce } from "immer";
 import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
 import AxisNode from "./AxisNode";
 
+import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faMinimize,
+  faExpand,
+} from "@fortawesome/free-solid-svg-icons";
+
 const AxesWrapper = styled.div`
   width: 14em;
   border-right: 5px solid #910101;
@@ -82,44 +89,6 @@ function finishRename(setRenameFocus, setMouse, setMenuTarget) {
   setRenameFocus(-1);
 }
 
-const AxisRenameInput = styled(AxisRenameInputBase)`
-  background-color: white;
-`;
-
-const AddButton = styled.button`
-  border-radius: 5px;
-  background-color: #gray;
-`;
-
-function AxisMenu({
-  mouse,
-  setMouse,
-  setMenuTarget,
-  rename,
-  drillAxis,
-  openAxis,
-  deleteAxis,
-}) {
-  return (
-    <Menu
-      keepMounted
-      open={mouse.Y !== null}
-      onClose={() => menuClose(setMouse, setMenuTarget)}
-      anchorReference="anchorPosition"
-      anchorPosition={
-        mouse.Y !== null && mouse.X !== null
-          ? { top: mouse.Y, left: mouse.X }
-          : undefined
-      }
-    >
-      <MenuItem onClick={openAxis}>Open</MenuItem>
-      <MenuItem onClick={drillAxis}>Expand</MenuItem>
-      <MenuItem onClick={rename}>Rename</MenuItem>
-      <MenuItem onClick={deleteAxis}>Delete</MenuItem>
-    </Menu>
-  );
-}
-
 function menuOpen(event, index, setMouse, setMenuTarget) {
   event.preventDefault();
   setMouse({ X: event.clientX - 2, Y: event.clientY - 4 });
@@ -131,41 +100,29 @@ function menuClose(setMouse, setMenuTarget) {
   setMenuTarget(-1);
 }
 
-// The defaults for a new board
-const newBoard = {
-  name: "New Axis",
-  children: [],
-  text: "",
-  expanded: false,
-};
-
 const AxesListMenu = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: left;
   align-items: center;
   height: 1em;
   margin-bottom: 2px;
   background: red;
 `;
 
-const ZoomOutButton = styled.button`
+const AxesMenuButton = styled.button`
   background: transparent;
   border: none;
   cursor: pointer;
   outline: none;
   padding: 0;
-  margin: 0;
+  margin: 3px;
 `;
-
-//Function to handle adding to the list
-function handleAdd(BC, trail) {
-  BC.addChild(trail, newBoard);
-}
 
 export default function AxesList({ BC }) {
   const [selected, setSetlected] = useState(null);
-  const [topNode, setTopNode] = useState([]);
+  const { topNode, setTopNode } = useContext(DisplayContext);
+  console.log("AxesList", topNode);
 
   const zoomIn = (coord) => {
     setTopNode(coord);
@@ -175,23 +132,26 @@ export default function AxesList({ BC }) {
     setTopNode(topNode.slice(0, -1));
   };
 
-  const zoomOutAll = () => {
-    setTopNode([]);
-  };
-
   // Generate the list of axes
   const topBoard = BC.getBoard(topNode);
   return (
     <AxesWrapper>
       <AxesListMenu>
-        <ZoomOutButton onClick={zoomOut}>Zoom Out</ZoomOutButton>
+        <AxesMenuButton onClick={zoomOut}>
+          <Icon icon={faArrowUp} size="lg" inverse />
+        </AxesMenuButton>
+        <AxesMenuButton onClick={BC.collapseBoards}>
+          <Icon icon={faMinimize} size="lg" inverse />
+        </AxesMenuButton>
+        <AxesMenuButton onClick={BC.expandBoards}>
+          <Icon icon={faExpand} size="lg" inverse />
+        </AxesMenuButton>
       </AxesListMenu>
       <AxisNode
         selected={selected}
         setSetlected={setSetlected}
         zoomIn={zoomIn}
         zoomOut={zoomOut}
-        zoomOutAll={zoomOutAll}
         board={topBoard}
         indent={0}
         BC={BC}

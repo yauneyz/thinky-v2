@@ -3,7 +3,7 @@
  */
 
 const newBoard = {
-  name: "New Axis",
+  name: "Untitled",
   children: [],
   text: "",
   expanded: true,

@@ -13,6 +13,10 @@ function displayReducer(state, action) {
       return { ...state, tabs: action.tabs };
     case "SET_STATE":
       return action.state;
+    case "SET_TOP_NODE":
+      return { ...state, topNode: action.topNode };
+    case "SET_HIGHLIGHT_TARGET":
+      return { ...state, highlightTarget: action.highlightTarget };
     // Custom Actions
     case "OPEN_EDITOR": {
       // If no tabs are open, create one and add this editor to it

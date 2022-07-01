@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { AuthContext, DisplayContext } from "../contexts";
 
 export default function Saver({ BC }) {
-  const { open, trail, tabs } = useContext(DisplayContext);
+  const { open, trail, tabs, topNode } = useContext(DisplayContext);
   const { token } = useContext(AuthContext);
 
   const saveSeconds = 2;
@@ -12,7 +12,7 @@ export default function Saver({ BC }) {
       const boards = BC.getBoard([]);
       fetch("/boards", {
         method: "POST",
-        body: JSON.stringify({ open, trail, boards, tabs }),
+        body: JSON.stringify({ open, trail, boards, tabs, topNode }),
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,

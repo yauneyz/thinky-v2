@@ -24,6 +24,10 @@ const DisplayContext = React.createContext({
   setTrail: () => {},
   tabs: [],
   setTabs: () => {},
+  topNode: [],
+  setTopNode: () => {},
+  highlightTarget: [],
+  setHighlightTarget: () => {},
 });
 
 const DisplayContextProvider = ({ children }) => {
@@ -31,6 +35,8 @@ const DisplayContextProvider = ({ children }) => {
     open: 0,
     trail: [],
     tabs: [],
+    topNode: [],
+    highlightTarget: [],
   };
   const [state, dispatch] = useReducer(displayReducer, initialState);
   const displayValue = {
@@ -43,6 +49,11 @@ const DisplayContextProvider = ({ children }) => {
     setTabs: (tabs) => dispatch({ type: "SET_TABS", tabs }),
     displayState: state,
     setDisplayState: (state) => dispatch({ type: "SET_STATE", state }),
+    topNode: state.topNode,
+    setTopNode: (topNode) => dispatch({ type: "SET_TOP_NODE", topNode }),
+    highlightTarget: state.highlightTarget,
+    setHighlightTarget: (highlightTarget) =>
+      dispatch({ type: "SET_HIGHLIGHT_TARGET", highlightTarget }),
 
     // Custom actions
     openEditor: (coord) => dispatch({ type: "OPEN_EDITOR", coord }),

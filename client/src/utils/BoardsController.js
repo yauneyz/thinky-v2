@@ -1,5 +1,22 @@
 import { produce } from "immer";
 
+// Recursive function to set expanded to false on all boards
+function collapseBoardsHelper(top) {
+  top.expanded = false;
+  for (let i = 0; i < top.children.length; i++) {
+    collapseBoardsHelper(top.children[i]);
+  }
+  return top;
+}
+
+function expandBoardsHelper(top) {
+  top.expanded = true;
+  for (let i = 0; i < top.children.length; i++) {
+    expandBoardsHelper(top.children[i]);
+  }
+  return top;
+}
+
 export default class BoardsController {
   constructor(boards, setBoards) {
     this.boards = boards;
@@ -13,6 +30,8 @@ export default class BoardsController {
     this.setBoardText = this.setBoardText.bind(this);
     this.deleteBoard = this.deleteBoard.bind(this);
     this.renameBoard = this.renameBoard.bind(this);
+    this.collapseBoards = this.collapseBoards.bind(this);
+    this.expandBoards = this.expandBoards.bind(this);
   }
 
   // Returns the board at the given coordinate
@@ -143,6 +162,42 @@ export default class BoardsController {
   renameBoard(coord, newName) {
     const newBoard = produce(this.getBoard(coord), (draft) => {
       draft.name = newName;
+    });
+    const newBoards = this.replaceBoardInternal(coord, newBoard);
+    this.setBoards(newBoards);
+  }
+
+  collapseBoards() {
+    const newBoards = produce(this.boards, (draft) => {
+      collapseBoardsHelper(draft);
+    });
+    this.setBoards(newBoards);
+  }
+
+  expandBoards() {
+    const newBoards = produce(this.boards, (draft) => {
+      expandBoardsHelper(draft);
+    });
+    this.setBoards(newBoards);
+  }
+
+  // Collapses all the boards below the given coordinate
+  collapseBelow(coord) {
+    const targetSubset = this.getBoard(coord);
+    const newBoard = produce(targetSubset, (draft) => {
+      collapseBoardsHelper(draft);
+      draft.expanded = true;
+    });
+    const newBoards = this.replaceBoardInternal(coord, newBoard);
+    this.setBoards(newBoards);
+  }
+
+  // Expands all the boards below the given coordinate
+  expandBelow(coord) {
+    const targetSubset = this.getBoard(coord);
+    const newBoard = produce(targetSubset, (draft) => {
+      expandBoardsHelper(draft);
+      draft.expanded = true;
     });
     const newBoards = this.replaceBoardInternal(coord, newBoard);
     this.setBoards(newBoards);

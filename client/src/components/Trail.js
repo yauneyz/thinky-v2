@@ -45,10 +45,10 @@ function TrailNodeList({ trail, setTrail, BC }) {
 }
 
 export default function Trail({ BC }) {
-  const { trail, setTrail } = useContext(DisplayContext);
+  const { topNode, setTopNode } = useContext(DisplayContext);
   return (
     <TrailBar>
-      <TrailNodeList trail={trail} setTrail={setTrail} BC={BC} />
+      <TrailNodeList trail={topNode} setTrail={setTopNode} BC={BC} />
     </TrailBar>
   );
 }

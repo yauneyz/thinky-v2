@@ -14,7 +14,6 @@ exports.register = (req, res) => {
         expanded: true,
         children: [],
       };
-      console.log("UID", uid);
       const newUser = {
         email,
         uid,

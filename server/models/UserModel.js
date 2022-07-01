@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
   open: Number,
   trail: [Number],
   tabs: [TabSchema],
+  topNode: [Number],
 });
 
 const User = mongoose.model("User", UserSchema);

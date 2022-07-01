@@ -45,12 +45,13 @@ export default function Main() {
     const getData = async () => {
       try {
         const data = await getBoards(token);
-        const { userOpen, userTrail, userBoards, userTabs } = data;
+        const { userOpen, userTrail, userBoards, userTabs, userTopNode } = data;
         setBoards(userBoards);
         setDisplayState({
           open: userOpen,
           trail: userTrail,
           tabs: userTabs,
+          topNode: userTopNode,
         });
         setLoaded(true);
       } catch (error) {

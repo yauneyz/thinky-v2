@@ -2,9 +2,9 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { DisplayContext } from "../contexts";
 import NewBoard from "../utils/NewBoard";
+import arrayEqual from "array-equal";
 import TransparentButton from "../utils/TransparentButton";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
-// Import small plus
 import { faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Menu, MenuItem, ClickAwayListener } from "@mui/material";
 
@@ -88,7 +88,14 @@ const AxisNodeBase = ({
   const [editable, setEditable] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mouse, setMouse] = useState({ X: null, Y: null });
-  const { openEditor, deleteAxis } = useContext(DisplayContext);
+  const { openEditor, deleteAxis, highlightTarget, setHighlightTarget } =
+    useContext(DisplayContext);
+
+  const newHighlight = highlightTarget
+    ? arrayEqual(coord, highlightTarget)
+    : false;
+
+  const effectiveEditable = editable || newHighlight;
 
   const handleToggle = () => {
     BC.toggleExpanded(coord);
@@ -96,7 +103,7 @@ const AxisNodeBase = ({
 
   const renameHandleKeyDown = (e) => {
     // Escape rename editing
-    if (editable && (e.key === "Enter" || e.key === "Escape")) {
+    if (effectiveEditable && (e.key === "Enter" || e.key === "Escape")) {
       setEditable(false);
     }
   };
@@ -111,7 +118,10 @@ const AxisNodeBase = ({
 
       // Add a new node
       if (e.key === "a") {
+        e.preventDefault();
         BC.addChild(coord, NewBoard);
+        const childCoord = coord.concat(board.children.length);
+        setHighlightTarget(childCoord);
       }
 
       // Open the editor
@@ -145,6 +155,12 @@ const AxisNodeBase = ({
               : undefined
           }
         >
+          <MenuItem onClick={() => BC.collapseBelow(coord)}>
+            Collapse Below
+          </MenuItem>
+          <MenuItem onClick={() => BC.expandBelow(coord)}>
+            Expand Below
+          </MenuItem>
           {coord.length > 0 && <MenuItem onClick={deleteNode}>Delete</MenuItem>}
         </Menu>
       </div>
@@ -159,7 +175,7 @@ const AxisNodeBase = ({
         indent={indent}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => {
-          if (!editable) {
+          if (!effectiveEditable) {
             setHover(false);
           }
         }}
@@ -170,7 +186,7 @@ const AxisNodeBase = ({
         }}
       >
         <Arrow expanded={board.expanded} toggleExpanded={handleToggle} />
-        {editable ? (
+        {effectiveEditable ? (
           <RenameInput
             autoFocus
             onFocus={(event) => {
@@ -184,6 +200,9 @@ const AxisNodeBase = ({
             onBlur={() => {
               setEditable(false);
               setHover(false);
+              if (newHighlight) {
+                setHighlightTarget(-1);
+              }
             }}
             onKeyDown={renameHandleKeyDown}
           />

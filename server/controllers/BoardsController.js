@@ -19,12 +19,14 @@ exports.getBoards = async (req, res) => {
   const open = currentUser.get("open");
   const trail = currentUser.get("trail");
   const tabs = currentUser.get("tabs");
+  const topNode = currentUser.get("topNode");
 
   res.json({
     userBoards: boards,
     userOpen: open,
     userTrail: trail,
     userTabs: tabs,
+    userTopNode: topNode,
   });
 };
 
