@@ -5,11 +5,14 @@ exports.getBoards = async (req, res) => {
 
   if (!req.user) {
     res.json({ success: false, message: "Request had no user attached" });
+    return;
   }
 
   const currentUser = await user.findOne({ uid: req.user.uid });
+  // if currentUser is null
   if (!currentUser) {
-    res.json({ success: false, message: "User not in database" });
+    res.json({ success: false, message: "User not found" });
+    return;
   }
 
   const boards = currentUser.get("boards");
