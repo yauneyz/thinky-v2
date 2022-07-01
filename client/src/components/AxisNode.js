@@ -13,30 +13,26 @@ function ArrowBase({ className, toggleExpanded }) {
 }
 
 const Arrow = styled(ArrowBase)`
-  width: 7px;
-  height: 7px;
-  margin: 3.5px;
-  background: #ff0000;
-  display: inline-block;
-  padding: 3px;
-  float: left;
-  margin-right: 0.5rem;
-  transform: rotate(${({ expanded }) => (expanded ? 225 : 135)}deg);
-  transition: transform 0.2s ease-in-out;
-  &:hover {
-    cursor: pointer;
-    transform: rotate(${({ expanded }) => (expanded ? 225 : 135)}deg);
-    box-shadow: 0 0 0 1px red;
-  }
-  &:after {
-    content: "";
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    width: 7px;
-    height: 7px;
-    background: white;
-  }
+  width: 0;
+  height: 0;
+  border-top: ${(props) =>
+    props.expanded && props.hasChildren
+      ? "5px solid #fff"
+      : "5px solid transparent"};
+  border-left: ${(props) =>
+    props.expanded || !props.hasChildren
+      ? "5px solid transparent"
+      : "5px solid #fff"};
+  border-right: ${(props) =>
+    props.expanded || !props.hasChildren
+      ? "5px solid transparent"
+      : "5px solid transparent"};
+  border-bottom: ${(props) =>
+    props.expanded ? "5px solid transparent" : "5px solid transparent"};
+  margin-top: ${(props) => (props.expanded ? "8px" : "6px")};
+  margin-left: ${(props) =>
+    props.expanded && props.hasChildren ? "0" : "2.5px"};
+  margin-right: 3px;
 `;
 
 const AxisTitle = styled.span`
@@ -185,7 +181,11 @@ const AxisNodeBase = ({
           setMenuOpen(true);
         }}
       >
-        <Arrow expanded={board.expanded} toggleExpanded={handleToggle} />
+        <Arrow
+          hasChildren={board.children.length > 0}
+          expanded={board.expanded}
+          toggleExpanded={handleToggle}
+        />
         {effectiveEditable ? (
           <RenameInput
             autoFocus
