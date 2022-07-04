@@ -99,7 +99,11 @@ const AxisNodeBase = ({
 
   const renameHandleKeyDown = (e) => {
     // Escape rename editing
+    debugger;
     if (effectiveEditable && (e.key === "Enter" || e.key === "Escape")) {
+      if (newHighlight) {
+        setHighlightTarget(-1);
+      }
       setEditable(false);
     }
   };
