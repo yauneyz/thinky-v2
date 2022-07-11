@@ -7,6 +7,7 @@ let BoardSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  id: String,
 });
 BoardSchema.add({ children: [BoardSchema] });
 

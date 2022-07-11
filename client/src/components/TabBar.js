@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import React, { useContext, useRef, useState } from "react";
-import { DisplayContext } from "../contexts";
+import { AuthContext, DisplayContext } from "../contexts";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../constants";
+import { useMutation, useQueryClient } from "react-query";
+import { deleteTab } from "../api/undo";
 
 const TabBarContainer = styled.div`
   height: 2em;
@@ -16,14 +18,17 @@ const TabDeleteButton = styled.span`
   font-size: 1em;
   font-weight: bold;
   cursor: pointer;
+  margin-left: auto;
   &:hover {
     background: red;
     color: white;
   }
+  margin-right: 5px;
 `;
 
 const TabTitle = styled.div`
   display: inline-block;
+  margin-left: 5px;
 `;
 
 const TabTitleInput = styled.input`
@@ -144,9 +149,13 @@ function TabButtonBase({
 }
 
 const TabButton = styled(TabButtonBase)`
-  background: ${(props) => (props.open === props.index ? "#fff" : "#ddd")};
+  background: ${(props) => (props.open === props.index ? "#fff" : "gray")};
   width: 8em;
-  border-radius-top: 0.5em;
+  border-radius: 4px;
+  margin: 1px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
 `;
 
 //A button for adding a tabs
@@ -163,9 +172,24 @@ const AddTabButton = styled.button`
   }
 `;
 
-export default function TabBar() {
+export default function TabBar({ BC }) {
+  const queryClient = useQueryClient();
+  const deleteTabMutation = useMutation(
+    (data) => {
+      return deleteTab(data);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate the cache for the deleted tab
+        queryClient.invalidateQueries();
+      },
+    }
+  );
+
   const { open, setOpen, tabs, setTabs, renameTab } =
     useContext(DisplayContext);
+
+  const { token } = useContext(AuthContext);
 
   // Tracks whether or not we have a new tab we need to focus
   const [newTab, setNewTab] = useState(-1);
@@ -177,6 +201,8 @@ export default function TabBar() {
     setNewTab(tabs.length);
   };
 
+  // Add the tab to the server's list of deleted tabs using a mutation
+
   const tabsList = tabs.map((tab, index) => {
     const deleteTab = async (event) => {
       event.stopPropagation();
@@ -187,6 +213,13 @@ export default function TabBar() {
         setOpen(Math.max(0, open - 1));
       }
       setTabs(tabs.filter((_, i) => i !== index));
+
+      const name = tab.name;
+      const tabIndex = index;
+      const boards = BC.getBoardIds(tab.editors);
+      const data = { token, boards, index: tabIndex, name };
+
+      deleteTabMutation.mutate(data);
     };
 
     return (

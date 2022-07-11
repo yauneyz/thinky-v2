@@ -29,6 +29,7 @@ const EditorText = styled.textarea`
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 4px;
 `;
 
 const EditorTitleBar = styled.div`
@@ -154,7 +155,7 @@ function EditorsList({ BC, className }) {
 export default function Editors({ BC }) {
   return (
     <Container>
-      <TabBar />
+      <TabBar BC={BC} />
       <EditorsContainer>
         <EditorsList BC={BC} />
       </EditorsContainer>

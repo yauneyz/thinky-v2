@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import { DisplayContext } from "../contexts";
+import { AuthContext, DisplayContext } from "../contexts";
 import NewBoard from "../utils/NewBoard";
 import arrayEqual from "array-equal";
-import TransparentButton from "../utils/TransparentButton";
-import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
-import { faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Menu, MenuItem, ClickAwayListener } from "@mui/material";
+import { deleteBoard } from "../api/undo";
+import { useMutation, useQueryClient } from "react-query";
 
 function ArrowBase({ className, toggleExpanded }) {
   return <div className={className} onClick={toggleExpanded}></div>;
@@ -80,12 +79,26 @@ const AxisNodeBase = ({
   coord,
   BC,
 }) => {
+  const { token } = useContext(AuthContext);
   const [hover, setHover] = useState(false);
   const [editable, setEditable] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mouse, setMouse] = useState({ X: null, Y: null });
   const { openEditor, deleteAxis, highlightTarget, setHighlightTarget } =
     useContext(DisplayContext);
+
+  const queryClient = useQueryClient();
+  const deleteAxisMutation = useMutation(
+    (data) => {
+      return deleteBoard(data);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate the cache for the deleted tab
+        queryClient.invalidateQueries();
+      },
+    }
+  );
 
   const newHighlight = highlightTarget
     ? arrayEqual(coord, highlightTarget)
@@ -99,7 +112,6 @@ const AxisNodeBase = ({
 
   const renameHandleKeyDown = (e) => {
     // Escape rename editing
-    debugger;
     if (effectiveEditable && (e.key === "Enter" || e.key === "Escape")) {
       if (newHighlight) {
         setHighlightTarget(-1);
@@ -138,7 +150,10 @@ const AxisNodeBase = ({
     };
 
     const deleteNode = () => {
+      const parentId = BC.getParentId(coord);
       deleteAxis(coord);
+      const deletedBoardData = { coord, board, parentId, token };
+      deleteAxisMutation.mutate(deletedBoardData);
       BC.deleteBoard(coord);
       handleClose();
     };

@@ -1,3 +1,4 @@
+import guid from "./guid";
 /*
  * This file specifies what a new board should look like.
  */
@@ -7,6 +8,7 @@ const newBoard = {
   children: [],
   text: "",
   expanded: true,
+  id: guid(),
 };
 
 export default newBoard;

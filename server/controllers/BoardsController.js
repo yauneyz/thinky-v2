@@ -1,15 +1,9 @@
 const user = require("../models/UserModel");
+const getUser = require("../utils/getUser");
 
 exports.getBoards = async (req, res) => {
-  // // Handle non-logged in
+  const currentUser = await getUser(req);
 
-  if (!req.user) {
-    res.json({ success: false, message: "Request had no user attached" });
-    return;
-  }
-
-  const currentUser = await user.findOne({ uid: req.user.uid });
-  // if currentUser is null
   if (!currentUser) {
     res.json({ success: false, message: "User not found" });
     return;

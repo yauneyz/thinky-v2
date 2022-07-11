@@ -1,10 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const session = require("cookie-session");
 const authRouter = require("./server/routes/auth");
 const boardsRouter = require("./server/routes/boards");
+const undoRouter = require("./server/routes/undo");
 const parseAuthToken = require("./server/middlewares/parseAuthToken");
 const path = require("path");
 require("dotenv").config();
@@ -44,6 +43,7 @@ app.use((_req, _res, next) => {
 
 app.use("/auth", authRouter);
 app.use("/boards", boardsRouter);
+app.use("/undo", undoRouter);
 
 app.use(express.static(path.join(__dirname, "client", "build")));
 

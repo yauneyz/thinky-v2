@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { produce } from "immer";
 import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
 import AxisNode from "./AxisNode";
+import UndoPanel from "./UndoPanel";
 
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
@@ -145,6 +146,7 @@ export default function AxesList({ BC }) {
         <AxesMenuButton onClick={BC.expandBoards}>
           <Icon icon={faExpand} size="lg" inverse />
         </AxesMenuButton>
+        <UndoPanel BC={BC} />
       </AxesListMenu>
       <AxisNode
         selected={selected}

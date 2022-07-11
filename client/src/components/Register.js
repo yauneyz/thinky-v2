@@ -50,7 +50,6 @@ function Register() {
         if (error.code === "auth/invalid-email") {
           alert("That is not a valid email address.");
         }
-        console.log("Registration failed", error);
       });
   };
 

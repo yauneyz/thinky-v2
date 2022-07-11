@@ -21,7 +21,6 @@ function Login() {
       ) {
         alert("No user was found with that email/password.");
       }
-      console.log("Login Failed: ", error);
     });
   };
   return (

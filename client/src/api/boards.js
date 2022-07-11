@@ -1,4 +1,4 @@
-const getBoards = async (token) => {
+exports.getBoards = async (token) => {
   if (!token) {
     return null;
   }
@@ -9,5 +9,3 @@ const getBoards = async (token) => {
     }),
   }).then((response) => response.json());
 };
-
-export { getBoards };

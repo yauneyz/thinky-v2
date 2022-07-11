@@ -32,6 +32,11 @@ export default class BoardsController {
     this.renameBoard = this.renameBoard.bind(this);
     this.collapseBoards = this.collapseBoards.bind(this);
     this.expandBoards = this.expandBoards.bind(this);
+    this.getBoardCoord = this.getBoardCoord.bind(this);
+    this.getBoardCoordHelper = this.getBoardCoordHelper.bind(this);
+    this.getBoardIds = this.getBoardIds.bind(this);
+    this.getParentId = this.getParentId.bind(this);
+    this.addChildById = this.addChildById.bind(this);
   }
 
   // Returns the board at the given coordinate
@@ -84,6 +89,7 @@ export default class BoardsController {
   }
 
   addChildHelper(coord, newBoard, draft) {
+    console.log(coord, newBoard);
     // Empty case
     if (coord.length == 0) {
       draft.children.push(newBoard);
@@ -201,5 +207,59 @@ export default class BoardsController {
     });
     const newBoards = this.replaceBoardInternal(coord, newBoard);
     this.setBoards(newBoards);
+  }
+
+  // Returns a list of all the board ids corresponding to the given coordinates
+  getBoardIds(coords) {
+    return coords.map((coord) => this.getBoard(coord).id);
+  }
+
+  getBoardCoordHelper(coord, id, board, index) {
+    if (board.id === id) {
+      return coord.concat(index);
+    }
+    // If we still have nested coordinates to work through
+    else {
+      const nextCoord = index ? coord.concat(index) : coord;
+      for (let i = 0; i < board.children.length; i++) {
+        const result = this.getBoardCoordHelper(
+          coord.concat(nextCoord),
+          id,
+          board.children[i],
+          i
+        );
+        if (result.length > 0) {
+          return result;
+        }
+      }
+      return [];
+    }
+  }
+
+  getBoardCoord(id) {
+    if (this.boards.id === id) {
+      return [];
+    }
+    return this.getBoardCoordHelper([], id, this.getBoard([]), null);
+  }
+  // Returns a list of all the board coordinates corresponding to the given ids
+  getBoardCoords(ids) {
+    return ids.map((id) => this.getBoardCoord(id));
+  }
+
+  getParentId(coord) {
+    if (coord.length == 0) {
+      return null;
+    }
+    return this.getBoard(coord.slice(0, coord.length - 1)).id;
+  }
+
+  addChildById(board, parentId) {
+    const parentCoord = this.getBoardCoord(parentId);
+    if (parentCoord.length == 0) {
+      this.addChild([], board);
+      return;
+    }
+    this.addChild(parentCoord, board);
   }
 }

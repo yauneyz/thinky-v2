@@ -31,7 +31,7 @@ export default function Main() {
   //console.log(token);
 
   // The application state
-  const { setDisplayState } = useContext(DisplayContext);
+  const { tabs, setDisplayState } = useContext(DisplayContext);
   const { boards, setBoards } = useContext(BoardsContext);
 
   // Make sure we load properly before proceeding
@@ -53,14 +53,19 @@ export default function Main() {
           tabs: userTabs,
           topNode: userTopNode,
         });
-        setLoaded(true);
       } catch (error) {
-        console.log("Data fetch error", error);
         setError(true);
       }
     };
     getData();
   }, []);
+
+  // useEffect to set loaded to true once we get the data
+  useEffect(() => {
+    if (tabs && boards) {
+      setLoaded(true);
+    }
+  }, [tabs, boards]);
 
   if (error) {
     return "Error retrieving data from the server";
