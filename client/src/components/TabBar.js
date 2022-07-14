@@ -115,7 +115,7 @@ function TabButtonBase({
       return { index };
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: !!monitor.isDragging(),
     }),
   });
   drag(drop(ref));

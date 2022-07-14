@@ -89,7 +89,7 @@ export default class BoardsController {
   }
 
   addChildHelper(coord, newBoard, draft) {
-    console.log(coord, newBoard);
+    debugger;
     // Empty case
     if (coord.length == 0) {
       draft.children.push(newBoard);
@@ -167,7 +167,7 @@ export default class BoardsController {
   // Rename a board
   renameBoard(coord, newName) {
     const newBoard = produce(this.getBoard(coord), (draft) => {
-      draft.name = newName;
+      draft.title = newName;
     });
     const newBoards = this.replaceBoardInternal(coord, newBoard);
     this.setBoards(newBoards);
@@ -214,26 +214,28 @@ export default class BoardsController {
     return coords.map((coord) => this.getBoard(coord).id);
   }
 
-  getBoardCoordHelper(coord, id, board, index) {
-    if (board.id === id) {
-      return coord.concat(index);
+  getBoardCoordHelper(coord, targetId, currentBoard, index) {
+    if (targetId !== "naruto") {
+      //debugger;
     }
-    // If we still have nested coordinates to work through
-    else {
-      const nextCoord = index ? coord.concat(index) : coord;
-      for (let i = 0; i < board.children.length; i++) {
-        const result = this.getBoardCoordHelper(
-          coord.concat(nextCoord),
-          id,
-          board.children[i],
-          i
-        );
-        if (result.length > 0) {
-          return result;
-        }
+    if (currentBoard.id === targetId) {
+      return coord;
+    }
+    if (currentBoard.children.length == 0) {
+      return null;
+    }
+    for (let i = 0; i < currentBoard.children.length; i++) {
+      const nextCoord = coord.concat([i]);
+      const result = this.getBoardCoordHelper(
+        nextCoord,
+        targetId,
+        currentBoard.children[i]
+      );
+      if (result) {
+        return result;
       }
-      return [];
     }
+    throw new Error("Could not find board with id " + targetId);
   }
 
   getBoardCoord(id) {
@@ -261,5 +263,54 @@ export default class BoardsController {
       return;
     }
     this.addChild(parentCoord, board);
+  }
+
+  isChild(targetId, sourceId) {
+    const targetCoord = this.getBoardCoord(targetId);
+    const sourceCoord = this.getBoardCoord(sourceId);
+    if (targetCoord.length == 0) {
+      return false;
+    }
+    if (targetCoord.length < sourceCoord.length) {
+      return false;
+    }
+    for (let i = 0; i < sourceCoord.length; i++) {
+      if (targetCoord[i] != sourceCoord[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  moveBoard(sourceId, sourceParentId, targetId) {
+    const targetCoord = this.getBoardCoord(targetId);
+    const sourceCoord = this.getBoardCoord(sourceId);
+    const sourceParentCoord = this.getBoardCoord(sourceParentId);
+
+    // If they source and target are same depth, update target coord
+    // to account for the deleted source
+    if (sourceCoord.length == targetCoord.length) {
+      if (
+        sourceCoord[sourceCoord.length - 1] <
+        targetCoord[sourceCoord.length - 1]
+      ) {
+        targetCoord[targetCoord.length - 1] -= 1;
+      }
+    }
+    const sourceBoard = this.getBoard(sourceCoord);
+    sourceBoard.parentId = targetId;
+
+    const deletedBoards = produce(this.boards, (draft) => {
+      return this.deleteChildHelper(
+        sourceParentCoord,
+        sourceCoord[sourceCoord.length - 1],
+        draft
+      );
+    });
+    debugger;
+    const finishedBoards = produce(deletedBoards, (draft) => {
+      return this.addChildHelper(targetCoord, sourceBoard, draft);
+    });
+    this.setBoards(finishedBoards);
   }
 }

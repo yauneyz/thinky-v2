@@ -38,7 +38,7 @@ function TrailNodeList({ trail, setTrail, BC }) {
   return trailBoards.map((board, index) => (
     <TrailNode
       key={index}
-      name={board.name}
+      name={board.title}
       clickHandler={() => setTrail(trail.slice(0, index))}
     />
   ));

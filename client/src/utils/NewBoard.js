@@ -4,11 +4,13 @@ import guid from "./guid";
  */
 
 const newBoard = {
-  name: "Untitled",
+  title: "Untitled",
+  subtitle: "",
   children: [],
   text: "",
   expanded: true,
   id: guid(),
+  parentId: null,
 };
 
 export default newBoard;

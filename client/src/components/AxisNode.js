@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 import { AuthContext, DisplayContext } from "../contexts";
 import NewBoard from "../utils/NewBoard";
@@ -6,6 +6,8 @@ import arrayEqual from "array-equal";
 import { Menu, MenuItem, ClickAwayListener } from "@mui/material";
 import { deleteBoard } from "../api/undo";
 import { useMutation, useQueryClient } from "react-query";
+import { useDrag, useDrop } from "react-dnd";
+import { ItemTypes } from "../constants";
 
 function ArrowBase({ className, toggleExpanded }) {
   return <div className={className} onClick={toggleExpanded}></div>;
@@ -131,7 +133,9 @@ const AxisNodeBase = ({
       // Add a new node
       if (e.key === "a") {
         e.preventDefault();
-        BC.addChild(coord, NewBoard);
+        let newBoard = { ...NewBoard };
+        newBoard.parentId = board.id;
+        BC.addChild(coord, newBoard);
         const childCoord = coord.concat(board.children.length);
         setHighlightTarget(childCoord);
       }
@@ -182,11 +186,66 @@ const AxisNodeBase = ({
     );
   };
 
+  const ref = useRef(null);
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemTypes.BOARD,
+    item: () => ({
+      id: board.id,
+      parentId: board.parentId,
+    }),
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+  const [{ validDrop, invalidDrop, isOver }, drop] = useDrop({
+    accept: ItemTypes.BOARD,
+    collect: (monitor) => ({
+      validDrop: monitor.canDrop() && monitor.isOver(),
+      invalidDrop: !monitor.canDrop() && monitor.isOver(),
+      isOver: monitor.isOver({ shallow: true }),
+    }),
+    // can drop if the item is not one of the board's children
+    canDrop: (item, _monitor) => {
+      const dragId = item.id;
+      const dropId = board.id;
+      const ans = !BC.isChild(dropId, dragId);
+      console.log(ans);
+      return ans;
+    },
+    drop: (item, monitor) => {
+      if (!monitor.isOver() || monitor.didDrop()) {
+        return;
+      }
+      const dragId = item.id;
+      const dragParentId = item.parentId;
+      const dropId = board.id;
+      BC.moveBoard(dragId, dragParentId, dropId);
+    },
+  });
+
+  drag(drop(ref));
+
+  // highlight yellow when it is dragging, otherwise transparent
+  let highlight = "transparent";
+  if (isDragging) {
+    highlight = isDragging ? "yellow" : "transparent";
+  } else {
+    if (validDrop) {
+      highlight = "green";
+    }
+    if (invalidDrop) {
+      highlight = "red";
+    }
+  }
+  const opacity = isDragging ? 0.5 : 1;
+
   return (
     <div>
       {/* Display the axis itself */}
 
       <AxisNodeContainer
+        ref={ref}
+        style={{ backgroundColor: highlight, opacity }}
         indent={indent}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => {
@@ -212,7 +271,7 @@ const AxisNodeBase = ({
               event.target.select();
             }}
             type="text"
-            value={board.name}
+            value={board.title}
             onChange={(e) => {
               BC.renameBoard(coord, e.target.value);
             }}
@@ -233,7 +292,7 @@ const AxisNodeBase = ({
             tabIndex={0}
             onKeyDown={treeKeyCommands}
           >
-            {board.name}
+            {board.title}
           </AxisTitle>
         )}
       </AxisNodeContainer>

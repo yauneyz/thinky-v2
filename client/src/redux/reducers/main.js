@@ -60,7 +60,7 @@ function main(state = initialState, action) {
     case RENAME_BOARD: {
       const { target, newName } = action.payload;
       const newBoards = [...state.boards];
-      newBoards[target].name = newName;
+      newBoards[target].title = newName;
       return {
         ...state,
         boards: newBoards,

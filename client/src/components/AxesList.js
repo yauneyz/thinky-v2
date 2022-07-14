@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import { DisplayContext } from "../contexts";
+import { BoardsContext, DisplayContext } from "../contexts";
 import styled from "styled-components";
 import { produce } from "immer";
-import { TextField, Menu, MenuItem, ClickAwayListener } from "@mui/material";
+import { TextField, ClickAwayListener } from "@mui/material";
 import AxisNode from "./AxisNode";
 import UndoPanel from "./UndoPanel";
 
@@ -80,7 +80,7 @@ function updateBoardName(event, index, trail, BC) {
   const targetCoord = trail.concat([index]);
   const targetBoard = BC.getBoard(targetCoord);
   const newBoard = produce(targetBoard, (draft) => {
-    draft.name = event.target.value;
+    draft.title = event.target.value;
   });
   BC.replaceBoard(targetCoord, newBoard);
 }

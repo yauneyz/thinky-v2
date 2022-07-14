@@ -38,6 +38,13 @@ const Container = styled.div`
   z-index: 10;
 `;
 
+const Undo = styled.div`
+  cursor: pointer;
+  &:hover {
+    color: #0066ff;
+  }
+`;
+
 export default function UndoPanel({ BC }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -95,9 +102,9 @@ export default function UndoPanel({ BC }) {
       };
 
       return (
-        <div onClick={resurrect} key={tab.id}>
+        <Undo onClick={resurrect} key={tab.id}>
           {tab.name}
-        </div>
+        </Undo>
       );
     });
   }
@@ -118,9 +125,9 @@ export default function UndoPanel({ BC }) {
       };
 
       return (
-        <div onClick={resurrect} key={axis.id}>
-          {board.name}
-        </div>
+        <Undo onClick={resurrect} key={axis.id}>
+          {board.title}
+        </Undo>
       );
     });
   }

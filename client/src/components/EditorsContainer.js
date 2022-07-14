@@ -119,7 +119,7 @@ function EditorBase({ className, children, coord, BC, index }) {
   return (
     <div style={{ opacity }} className={className}>
       <EditorTitleBar ref={ref}>
-        <EditorTitle>{board.name}</EditorTitle>
+        <EditorTitle>{board.title}</EditorTitle>
         <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
       </EditorTitleBar>
       <EditorText
