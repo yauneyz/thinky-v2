@@ -10,7 +10,6 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import Routes from "./routes";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "./App.css";
-import "react-sortable-tree/style.css";
 
 export function App() {
   const queryClient = new QueryClient();
