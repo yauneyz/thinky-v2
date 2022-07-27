@@ -172,7 +172,7 @@ const AddTabButton = styled.button`
   }
 `;
 
-export default function TabBar({ BC }) {
+export default function TabBar() {
   const queryClient = useQueryClient();
   const deleteTabMutation = useMutation(
     (data) => {
@@ -216,7 +216,7 @@ export default function TabBar({ BC }) {
 
       const name = tab.name;
       const tabIndex = index;
-      const boards = BC.getBoardIds(tab.editors);
+      const boards = tab.editors;
       const data = { token, boards, index: tabIndex, name };
 
       deleteTabMutation.mutate(data);

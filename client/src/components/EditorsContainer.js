@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { DisplayContext } from "../contexts";
+import { BoardsContext, DisplayContext } from "../contexts";
 import styled from "styled-components";
 import arrayEquals from "array-equal";
 import { useDrag, useDrop } from "react-dnd";
@@ -48,15 +48,16 @@ const DeleteButton = styled.button`
   margin-right: 10px;
 `;
 
-function EditorBase({ className, children, coord, BC, index }) {
+function EditorBase({ className, children, boardId, index }) {
   // Handles the local text changes so we don't have to update global boards that often
   // Gets its initial data from boards, but then manage it locally
-  const board = BC.getBoard(coord);
+  const { getBoard, setBoardText } = useContext(BoardsContext);
+  const board = getBoard(boardId);
   const { closeEditor } = useContext(DisplayContext);
 
   const handleTextChange = (event) => {
     const newText = event.target.value;
-    BC.setBoardText(coord, newText);
+    setBoardText(boardId, newText);
   };
 
   // Drag and drop
@@ -120,7 +121,7 @@ function EditorBase({ className, children, coord, BC, index }) {
     <div style={{ opacity }} className={className}>
       <EditorTitleBar ref={ref}>
         <EditorTitle>{board.title}</EditorTitle>
-        <DeleteButton onClick={() => closeEditor(coord)}>X</DeleteButton>
+        <DeleteButton onClick={() => closeEditor(boardId)}>X</DeleteButton>
       </EditorTitleBar>
       <EditorText
         value={board.text}
@@ -137,7 +138,7 @@ const Editor = styled(EditorBase)`
   min-width: 25em;
 `;
 
-function EditorsList({ BC, className }) {
+function EditorsList({ className }) {
   const { open, tabs } = useContext(DisplayContext);
   // If current tab has no editors, return empty div
   if (tabs.length === 0) {
@@ -145,19 +146,18 @@ function EditorsList({ BC, className }) {
   }
 
   const effectiveOpen = Math.min(open, tabs.length - 1);
-  const editorsList = tabs[effectiveOpen].editors.map((coord, index) => {
-    const key = `${index}${coord.join("-")}`;
-    return <Editor key={key} coord={coord} BC={BC} index={index} />;
+  const editorsList = tabs[effectiveOpen].editors.map((id, index) => {
+    return <Editor key={id} boardId={id} index={index} />;
   });
   return editorsList;
 }
 
-export default function Editors({ BC }) {
+export default function Editors() {
   return (
     <Container>
-      <TabBar BC={BC} />
+      <TabBar />
       <EditorsContainer>
-        <EditorsList BC={BC} />
+        <EditorsList />
       </EditorsContainer>
     </Container>
   );

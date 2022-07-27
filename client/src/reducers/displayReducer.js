@@ -2,7 +2,7 @@ import arrayEqual from "array-equal";
 import produce from "immer";
 
 function displayReducer(state, action) {
-  const { tabs, open, trail } = state;
+  const { tabs, open } = state;
   switch (action.type) {
     // Standard actions
     case "SET_OPEN":
@@ -41,18 +41,17 @@ function displayReducer(state, action) {
     case "CLOSE_EDITOR": {
       const newTabs = produce(tabs, (draft) => {
         draft[open].editors = draft[open].editors.filter(
-          (editor) => !arrayEqual(editor, action.coord)
+          (editor) => editor !== action.id
         );
       });
       return { ...state, tabs: newTabs };
     }
     // Closes all editors whose coordinates contain the given coord
-    case "DELETE_AXIS": {
-      const targetCoord = action.coord;
+    case "CLOSE_EDITORS": {
       const newTabs = produce(tabs, (draft) => {
         draft[open].editors = draft[open].editors.filter(
-          (editor) =>
-            !arrayEqual(editor.slice(0, targetCoord.length), action.coord)
+          // editor not in ids
+          (editor) => action.ids.includes(editor)
         );
       });
       return { ...state, tabs: newTabs };
@@ -89,8 +88,8 @@ function displayReducer(state, action) {
       };
 
     default:
-      throw new Error("Unexpected action");
+      throw new Error(`Unhandled action type: ${action.type}`);
   }
 }
 
-export { displayReducer };
+export default displayReducer;

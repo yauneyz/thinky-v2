@@ -5,17 +5,16 @@ const AxisUndoSchema = require("./AxisUndo");
 
 const TabSchema = new mongoose.Schema({
   name: String,
-  editors: [[Number]],
+  editors: [String],
 });
 
 const UserSchema = new mongoose.Schema({
   uid: { type: String, required: true },
   email: { type: String, required: true },
-  boards: BoardSchema,
+  boards: [BoardSchema],
   open: Number,
-  trail: [Number],
   tabs: [TabSchema],
-  topNode: [Number],
+  topNode: String,
   deletedTabs: [TabUndoSchema],
   deletedAxes: [AxisUndoSchema],
 });

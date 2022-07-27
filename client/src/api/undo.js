@@ -42,13 +42,12 @@ exports.restoreTab = async (data) => {
   }).then((response) => response.json());
 };
 
-exports.deleteBoard = async (data) => {
-  const { token, board, parentId, coord } = data;
+exports.deleteBoardRequest = async (data) => {
+  const { token, board } = data;
   if (!token) {
     return null;
   }
-  const body = { board, parentId, coord };
-  console.log("deleteBoard", body);
+  const body = { board };
   return await fetch("/undo/deleteAxis", {
     method: "POST",
     headers: new Headers({

@@ -1,14 +1,77 @@
 import React, { useState, useContext, useEffect, useReducer } from "react";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { displayReducer } from "./reducers";
+import displayReducer from "./reducers/displayReducer";
+import boardReducer from "./reducers/boardReducer";
 // Track boards
 
 const BoardsContext = React.createContext({ boards: [], setBoards: () => {} });
 
 const BoardsContextProvider = ({ children }) => {
-  const [boards, setBoards] = useState(null);
-  const boardsValue = { boards, setBoards };
+  const initialState = {
+    boards: [],
+    setBoards: () => {},
+  };
+  const [state, dispatch] = useReducer(boardReducer, initialState);
+
+  const getNodeTree = (topNode) => {
+    const result = [];
+    const topBoard = state.boards.find((board) => board.id === topNode);
+    const stack = [[topBoard, 0]];
+    while (stack.length > 0) {
+      const currentNode = stack.pop();
+      result.push(currentNode);
+      const children = state.boards.filter(
+        (board) => board.parentId === currentNode[0].id
+      );
+      for (let i = children.length - 1; i >= 0; i--) {
+        stack.push([children[i], currentNode[1] + 1]);
+      }
+    }
+    return result;
+  };
+
+  const getChildren = (id) => {
+    const result = [];
+    const stack = state.boards.filter((board) => board.parentId === id);
+    while (stack.length > 0) {
+      const childId = stack.pop();
+      const newChildren = state.boards.filter(
+        (board) => board.parentId === childId
+      );
+      result.push(childId);
+      stack.push(...newChildren);
+    }
+    return result;
+  };
+
+  const boardsValue = {
+    boards: state.boards,
+    setBoards: (boards) => dispatch({ type: "SET_BOARDS", boards }),
+    addBoard: (board) => dispatch({ type: "ADD_BOARD", board }),
+    deleteBoard: (id) => dispatch({ type: "DELETE_BOARD", id }),
+    setBoardText: (id, text) => dispatch({ type: "SET_BOARD_TEXT", id, text }),
+    renameBoard: (id, title) =>
+      dispatch({ type: "SET_BOARD_TITLE", id, title }),
+    toggleExpanded: (id) => dispatch({ type: "TOGGLE_EXPANDED", id }),
+    collapseAll: () => dispatch({ type: "COLLAPSE_ALL" }),
+    expandAll: () => dispatch({ type: "EXPAND_ALL" }),
+    setParent: (id, parentId) => dispatch({ type: "MOVE_BOARD", id, parentId }),
+    getBoard: (id) => state.boards.find((board) => board.id === id),
+    moveBoard: (id, parentId) => dispatch({ type: "MOVE_BOARD", id, parentId }),
+    reorderBoards: (drag, drop, dragIndex, dropIndex) =>
+      dispatch({ type: "REORDER_BOARDS", drag, drop, dragIndex, dropIndex }),
+    isChild: (drag, drop) => {
+      if (drag === drop) {
+        return true;
+      }
+      const nodeTree = getNodeTree(drag);
+      return !!nodeTree.find((node) => node[0].id === drop);
+    },
+    getNodeTree,
+    getChildren,
+  };
+
   return (
     <BoardsContext.Provider value={boardsValue}>
       {children}
@@ -24,7 +87,7 @@ const DisplayContext = React.createContext({
   setTrail: () => {},
   tabs: [],
   setTabs: () => {},
-  topNode: [],
+  topNode: "ROOT",
   setTopNode: () => {},
   highlightTarget: [],
   setHighlightTarget: () => {},
@@ -35,7 +98,7 @@ const DisplayContextProvider = ({ children }) => {
     open: 0,
     trail: [],
     tabs: [],
-    topNode: [],
+    topNode: "ROOT",
     highlightTarget: [],
   };
   const [state, dispatch] = useReducer(displayReducer, initialState);
@@ -57,8 +120,8 @@ const DisplayContextProvider = ({ children }) => {
 
     // Custom actions
     openEditor: (coord) => dispatch({ type: "OPEN_EDITOR", coord }),
-    closeEditor: (coord) => dispatch({ type: "CLOSE_EDITOR", coord }),
-    deleteAxis: (coord) => dispatch({ type: "DELETE_AXIS", coord }),
+    closeEditor: (id) => dispatch({ type: "CLOSE_EDITOR", id }),
+    closeEditors: (ids) => dispatch({ type: "CLOSE_EDITORS", ids }),
     addTab: (tab) => dispatch({ type: "ADD_TAB", tab }),
     deleteTab: (tab) => dispatch({ type: "DELETE_TAB", tab }),
     renameTab: (index, name) => dispatch({ type: "RENAME_TAB", index, name }),
@@ -132,6 +195,7 @@ const FirebaseContextProvider = ({ children }) => {
   const value = { Auth };
   return (
     <FirebaseContext.Provider value={value}>
+      {" "}
       {children}
     </FirebaseContext.Provider>
   );

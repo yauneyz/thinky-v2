@@ -88,9 +88,9 @@ exports.deleteAxis = async function (req, res) {
     return;
   }
 
-  const { board, coord, parentId } = req.body;
+  const { board } = req.body;
   const axisId = guid();
-  const deletedAxis = { board, coord, parentId, id: axisId };
+  const deletedAxis = { board, id: axisId };
   try {
     const result = await currentUser.updateOne({
       $push: { deletedAxes: deletedAxis },

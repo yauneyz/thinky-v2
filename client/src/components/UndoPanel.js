@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import TransparentButton from "../utils/TransparentButton";
-import { DisplayContext, AuthContext } from "../contexts";
+import { DisplayContext, AuthContext, BoardsContext } from "../contexts";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { produce } from "immer";
@@ -57,6 +57,7 @@ export default function UndoPanel({ BC }) {
   }
 
   const { tabs, displayState, setDisplayState } = useContext(DisplayContext);
+  const { boards, addBoard } = useContext(BoardsContext);
   const { token } = useContext(AuthContext);
   const { data: tabData, status: tabStatus } = useQuery("getDeletedTabs", () =>
     getDeletedTabs(token)
@@ -90,7 +91,7 @@ export default function UndoPanel({ BC }) {
         event.stopPropagation();
         const tabIndex = tab.index;
         const name = tab.name;
-        const editors = BC.getBoardCoords(tab.boards);
+        const editors = tab.boards;
         const tabData = { name, editors };
         // set tabs to be current tabs with the tab inserted at the given index
         const newTabs = produce(tabs, (draft) => {
@@ -115,12 +116,15 @@ export default function UndoPanel({ BC }) {
     axesData.reverse();
     deletedAxes = clone.map((axis) => {
       // Insets the tab into the given index
-      const { board, parentId } = axis;
+      const { board } = axis;
+      if (!boards.includes(board.parentId)) {
+        board.parentId = "ROOT";
+      }
       const resurrect = (event) => {
         event.preventDefault();
         event.stopPropagation();
         const restoreData = { token, id: axis.id };
-        BC.addChildById(board, parentId);
+        addBoard(board);
         restoreBoardMutation.mutate(restoreData);
       };
 

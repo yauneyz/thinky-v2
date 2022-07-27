@@ -5,7 +5,6 @@ import { produce } from "immer";
 import { TextField, ClickAwayListener } from "@mui/material";
 import AxisNode from "./AxisNode";
 import UndoPanel from "./UndoPanel";
-
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import {
   faArrowUp,
@@ -22,11 +21,6 @@ const AxesWrapper = styled.div`
   overflow: auto;
 `;
 
-const AxesUL = styled.div`
-  height: 100%;
-  width: 100%;
-  padding-left: 5px;
-`;
 function AxisLIBase({ className, children, index, setMouse, setMenuTarget }) {
   return (
     <div
@@ -38,67 +32,10 @@ function AxisLIBase({ className, children, index, setMouse, setMenuTarget }) {
   );
 }
 
-const AxisLI = styled(AxisLIBase)`
-  color: white;
-  font-size: 1em;
-  font-weight: bold;
-  word-wrap: break-word;
-  padding: 5px;
-`;
-
-// Component for the text area
-function AxisRenameInputBase({
-  className,
-  index,
-  setRenameFocus,
-  setMouse,
-  setMenuTarget,
-  trail,
-  BC,
-}) {
-  const finish = () => finishRename(setRenameFocus, setMouse, setMenuTarget);
-  return (
-    <ClickAwayListener onClickAway={finish}>
-      <TextField
-        autoFocus
-        onChange={(event) => updateBoardName(event, index, trail, BC)}
-        className={className}
-        size="small"
-        onKeyDown={(event) => handleKeyPress(event, finish)}
-      />
-    </ClickAwayListener>
-  );
-}
-
-function handleKeyPress(event, finish) {
-  if (event.keyCode === 13) {
-    finish();
-  }
-}
-
-function updateBoardName(event, index, trail, BC) {
-  const targetCoord = trail.concat([index]);
-  const targetBoard = BC.getBoard(targetCoord);
-  const newBoard = produce(targetBoard, (draft) => {
-    draft.title = event.target.value;
-  });
-  BC.replaceBoard(targetCoord, newBoard);
-}
-
-function finishRename(setRenameFocus, setMouse, setMenuTarget) {
-  menuClose(setMouse, setMenuTarget);
-  setRenameFocus(-1);
-}
-
 function menuOpen(event, index, setMouse, setMenuTarget) {
   event.preventDefault();
   setMouse({ X: event.clientX - 2, Y: event.clientY - 4 });
   setMenuTarget(index);
-}
-
-function menuClose(setMouse, setMenuTarget) {
-  setMouse({ X: null, Y: null });
-  setMenuTarget(-1);
 }
 
 const AxesListMenu = styled.div`
@@ -120,44 +57,54 @@ const AxesMenuButton = styled.button`
   margin: 3px;
 `;
 
-export default function AxesList({ BC }) {
+export default function AxesList() {
   const [selected, setSetlected] = useState(null);
   const { topNode, setTopNode } = useContext(DisplayContext);
+  const { getBoard, collapseAll, expandAll, getNodeTree } =
+    useContext(BoardsContext);
+  const topBoard = getBoard(topNode);
 
-  const zoomIn = (coord) => {
-    setTopNode(coord);
+  const zoomIn = (id) => {
+    setTopNode(id);
   };
 
   const zoomOut = () => {
-    setTopNode(topNode.slice(0, -1));
+    setTopNode(topBoard.parentId);
   };
 
+  const nodeTree = getNodeTree(topNode);
+  const axes = nodeTree.map((nodePair, index) => {
+    const node = nodePair[0];
+    const indent = nodePair[1];
+    return (
+      <AxisNode
+        key={index}
+        selected={selected}
+        setSetlected={setSetlected}
+        zoomIn={zoomIn}
+        zoomOut={zoomOut}
+        board={node}
+        indent={indent}
+      />
+    );
+  });
+
   // Generate the list of axes
-  const topBoard = BC.getBoard(topNode);
   return (
     <AxesWrapper>
       <AxesListMenu>
         <AxesMenuButton onClick={zoomOut}>
           <Icon icon={faArrowUp} size="lg" inverse />
         </AxesMenuButton>
-        <AxesMenuButton onClick={BC.collapseBoards}>
+        <AxesMenuButton onClick={collapseAll}>
           <Icon icon={faMinimize} size="lg" inverse />
         </AxesMenuButton>
-        <AxesMenuButton onClick={BC.expandBoards}>
+        <AxesMenuButton onClick={expandAll}>
           <Icon icon={faExpand} size="lg" inverse />
         </AxesMenuButton>
-        <UndoPanel BC={BC} />
+        <UndoPanel />
       </AxesListMenu>
-      <AxisNode
-        selected={selected}
-        setSetlected={setSetlected}
-        zoomIn={zoomIn}
-        zoomOut={zoomOut}
-        board={topBoard}
-        indent={0}
-        BC={BC}
-        coord={topNode}
-      />
+      {axes}
     </AxesWrapper>
   );
 }

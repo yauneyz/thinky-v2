@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 let BoardSchema = new mongoose.Schema({
   title: String,
-  subtitle: String,
   text: String,
   expanded: {
     type: Boolean,
@@ -10,7 +9,7 @@ let BoardSchema = new mongoose.Schema({
   },
   id: String,
   parentId: String,
+  children: [String],
 });
-BoardSchema.add({ children: [BoardSchema] });
 
 module.exports = BoardSchema;

@@ -38,18 +38,15 @@ export default function Main() {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
-  const BC = new BoardsController(boards, setBoards);
-
   // Get boards data from the server
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await getBoards(token);
-        const { userOpen, userTrail, userBoards, userTabs, userTopNode } = data;
+        const { userOpen, userBoards, userTabs, userTopNode } = data;
         setBoards(userBoards);
         setDisplayState({
           open: userOpen,
-          trail: userTrail,
           tabs: userTabs,
           topNode: userTopNode,
         });
@@ -62,7 +59,7 @@ export default function Main() {
 
   // useEffect to set loaded to true once we get the data
   useEffect(() => {
-    if (tabs && boards) {
+    if (tabs && boards.length > 0) {
       setLoaded(true);
     }
   }, [tabs, boards]);
@@ -78,12 +75,12 @@ export default function Main() {
   return (
     <AppContainer>
       <TitleBar />
-      <Trail BC={BC} />
+      <Trail />
       <Container2>
-        <AxesList BC={BC} />
-        <Editors BC={BC} />
+        <AxesList />
+        <Editors />
       </Container2>
-      <Saver BC={BC} />)
+      <Saver />)
     </AppContainer>
   );
 }

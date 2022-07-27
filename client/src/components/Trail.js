@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { DisplayContext } from "../contexts";
+import { BoardsContext, DisplayContext } from "../contexts";
 
 const TrailBar = styled.div`
   height: 3em;
@@ -28,27 +28,29 @@ function TrailNode({ name, clickHandler }) {
   return <TrailNodeText onClick={clickHandler}>{name}</TrailNodeText>;
 }
 
-function TrailNodeList({ trail, setTrail, BC }) {
-  let currentBoard = BC.getBoard([]);
+function TrailNodeList({ terminalNode, setTrail }) {
+  const { getBoard, boards } = useContext(BoardsContext);
+  let currentBoard = getBoard(terminalNode);
   let trailBoards = [currentBoard];
-  for (const i of trail) {
-    currentBoard = currentBoard.children[i];
+  while (currentBoard.id !== "ROOT") {
+    currentBoard = getBoard(currentBoard.parentId);
     trailBoards.push(currentBoard);
   }
+  trailBoards.reverse();
   return trailBoards.map((board, index) => (
     <TrailNode
       key={index}
       name={board.title}
-      clickHandler={() => setTrail(trail.slice(0, index))}
+      clickHandler={() => setTrail(board.id)}
     />
   ));
 }
 
-export default function Trail({ BC }) {
+export default function Trail() {
   const { topNode, setTopNode } = useContext(DisplayContext);
   return (
     <TrailBar>
-      <TrailNodeList trail={topNode} setTrail={setTopNode} BC={BC} />
+      <TrailNodeList terminalNode={topNode} setTrail={setTopNode} />
     </TrailBar>
   );
 }

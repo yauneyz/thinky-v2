@@ -1,10 +1,10 @@
 import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components";
-import { AuthContext, DisplayContext } from "../contexts";
+import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
 import NewBoard from "../utils/NewBoard";
 import arrayEqual from "array-equal";
 import { Menu, MenuItem, ClickAwayListener } from "@mui/material";
-import { deleteBoard } from "../api/undo";
+import { deleteBoardRequest } from "../api/undo";
 import { useMutation, useQueryClient } from "react-query";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../constants";
@@ -78,21 +78,31 @@ const AxisNodeBase = ({
   zoomOut,
   zoomOutAll,
   indent,
-  coord,
-  BC,
 }) => {
+  const { id } = board;
   const { token } = useContext(AuthContext);
+  const {
+    boards,
+    addBoard,
+    deleteBoard,
+    toggleExpanded,
+    isChild,
+    moveBoard,
+    renameBoard,
+    getChildren,
+    reorderBoards,
+  } = useContext(BoardsContext);
   const [hover, setHover] = useState(false);
   const [editable, setEditable] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mouse, setMouse] = useState({ X: null, Y: null });
-  const { openEditor, deleteAxis, highlightTarget, setHighlightTarget } =
+  const { openEditor, closeEditors, highlightTarget, setHighlightTarget } =
     useContext(DisplayContext);
 
   const queryClient = useQueryClient();
   const deleteAxisMutation = useMutation(
     (data) => {
-      return deleteBoard(data);
+      return deleteBoardRequest(data);
     },
     {
       onSuccess: () => {
@@ -102,21 +112,19 @@ const AxisNodeBase = ({
     }
   );
 
-  const newHighlight = highlightTarget
-    ? arrayEqual(coord, highlightTarget)
-    : false;
+  const newHighlight = highlightTarget === id;
 
   const effectiveEditable = editable || newHighlight;
 
   const handleToggle = () => {
-    BC.toggleExpanded(coord);
+    toggleExpanded(id);
   };
 
   const renameHandleKeyDown = (e) => {
     // Escape rename editing
     if (effectiveEditable && (e.key === "Enter" || e.key === "Escape")) {
       if (newHighlight) {
-        setHighlightTarget(-1);
+        setHighlightTarget(null);
       }
       setEditable(false);
     }
@@ -127,22 +135,22 @@ const AxisNodeBase = ({
     if (hover) {
       // Zoom in
       if (e.key === "z") {
-        zoomIn(coord);
+        zoomIn(id);
       }
 
       // Add a new node
       if (e.key === "a") {
+        console.log("add node");
         e.preventDefault();
-        let newBoard = { ...NewBoard };
+        let newBoard = NewBoard();
         newBoard.parentId = board.id;
-        BC.addChild(coord, newBoard);
-        const childCoord = coord.concat(board.children.length);
-        setHighlightTarget(childCoord);
+        addBoard(newBoard);
+        setHighlightTarget(newBoard.id);
       }
 
       // Open the editor
       if (e.key === "q") {
-        openEditor(coord);
+        openEditor(id);
       }
     }
   };
@@ -154,11 +162,11 @@ const AxisNodeBase = ({
     };
 
     const deleteNode = () => {
-      const parentId = BC.getParentId(coord);
-      deleteAxis(coord);
-      const deletedBoardData = { coord, board, parentId, token };
+      const children = getChildren(board.id);
+      closeEditors(children);
+      const deletedBoardData = { board, token };
       deleteAxisMutation.mutate(deletedBoardData);
-      BC.deleteBoard(coord);
+      deleteBoard(id);
       handleClose();
     };
 
@@ -174,13 +182,7 @@ const AxisNodeBase = ({
               : undefined
           }
         >
-          <MenuItem onClick={() => BC.collapseBelow(coord)}>
-            Collapse Below
-          </MenuItem>
-          <MenuItem onClick={() => BC.expandBelow(coord)}>
-            Expand Below
-          </MenuItem>
-          {coord.length > 0 && <MenuItem onClick={deleteNode}>Delete</MenuItem>}
+          {id !== "ROOT" && <MenuItem onClick={deleteNode}>Delete</MenuItem>}
         </Menu>
       </div>
     );
@@ -204,12 +206,47 @@ const AxisNodeBase = ({
       invalidDrop: !monitor.canDrop() && monitor.isOver(),
       isOver: monitor.isOver({ shallow: true }),
     }),
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      const dragId = item.id;
+      const hoverId = board.id;
+      const dragIndex = boards.findIndex((board) => board.id === dragId);
+      const hoverIndex = boards.findIndex((board) => board.id === hoverId);
+      // Don't replace items with themselves
+      if (dragId === hoverId || item.parentId !== board.parentId) {
+        return;
+      }
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      // Get vertical middle
+      const hoverMiddleY =
+        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+      // Get pixels to the top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
+      // Dragging downwards
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+        return;
+      }
+      // Dragging upwards
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+        return;
+      }
+      // Time to actually perform the action
+      reorderBoards(dragId, hoverId, dragIndex, hoverIndex);
+      item.index = hoverId;
+    },
     // can drop if the item is not one of the board's children
     canDrop: (item, _monitor) => {
       const dragId = item.id;
       const dropId = board.id;
-      const ans = !BC.isChild(dropId, dragId);
-      console.log(ans);
+      const ans = !isChild(dragId, dropId);
       return ans;
     },
     drop: (item, monitor) => {
@@ -217,9 +254,8 @@ const AxisNodeBase = ({
         return;
       }
       const dragId = item.id;
-      const dragParentId = item.parentId;
       const dropId = board.id;
-      BC.moveBoard(dragId, dragParentId, dropId);
+      moveBoard(dragId, dropId);
     },
   });
 
@@ -260,7 +296,10 @@ const AxisNodeBase = ({
         }}
       >
         <Arrow
-          hasChildren={board.children.length > 0}
+          // hasChildren determines if bouards contains elements whose parentId is equal to the given id
+          hasChildren={() => {
+            boards.filter((board) => board.parentId === id).length > 0;
+          }}
           expanded={board.expanded}
           toggleExpanded={handleToggle}
         />
@@ -273,13 +312,13 @@ const AxisNodeBase = ({
             type="text"
             value={board.title}
             onChange={(e) => {
-              BC.renameBoard(coord, e.target.value);
+              renameBoard(id, e.target.value);
             }}
             onBlur={() => {
               setEditable(false);
               setHover(false);
               if (newHighlight) {
-                setHighlightTarget(-1);
+                setHighlightTarget(null);
               }
             }}
             onKeyDown={renameHandleKeyDown}
@@ -297,24 +336,6 @@ const AxisNodeBase = ({
         )}
       </AxisNodeContainer>
       <NodeMenu />
-
-      {/* The children for this axis */}
-
-      {board.expanded &&
-        board.children.map((child, i) => (
-          <AxisNode
-            key={i}
-            board={child}
-            selected={selected}
-            setSelected={setSelected}
-            zoomIn={zoomIn}
-            zoomOut={zoomOut}
-            zoomOutAll={zoomOutAll}
-            indent={indent + 1}
-            BC={BC}
-            coord={coord.concat(i)}
-          />
-        ))}
     </div>
   );
 };

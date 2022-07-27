@@ -11,14 +11,12 @@ exports.getBoards = async (req, res) => {
 
   const boards = currentUser.get("boards");
   const open = currentUser.get("open");
-  const trail = currentUser.get("trail");
   const tabs = currentUser.get("tabs");
   const topNode = currentUser.get("topNode");
 
   res.json({
     userBoards: boards,
     userOpen: open,
-    userTrail: trail,
     userTabs: tabs,
     userTopNode: topNode,
   });
@@ -31,11 +29,11 @@ exports.updateBoards = async (req, res) => {
     res.json({ success: false, message: "Request had no user attached" });
   }
 
-  const { boards, open, tabs, trail } = req.body;
+  const { boards, open, tabs } = req.body;
 
   user.updateOne(
     { uid: req.user.uid },
-    { boards: boards, open: open, trail: trail, tabs: tabs },
+    { boards: boards, open: open, tabs: tabs },
     {},
     (error, result) => {
       if (error) {

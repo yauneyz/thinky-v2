@@ -89,7 +89,6 @@ export default class BoardsController {
   }
 
   addChildHelper(coord, newBoard, draft) {
-    debugger;
     // Empty case
     if (coord.length == 0) {
       draft.children.push(newBoard);
@@ -215,9 +214,6 @@ export default class BoardsController {
   }
 
   getBoardCoordHelper(coord, targetId, currentBoard, index) {
-    if (targetId !== "naruto") {
-      //debugger;
-    }
     if (currentBoard.id === targetId) {
       return coord;
     }
@@ -307,10 +303,25 @@ export default class BoardsController {
         draft
       );
     });
-    debugger;
     const finishedBoards = produce(deletedBoards, (draft) => {
       return this.addChildHelper(targetCoord, sourceBoard, draft);
     });
     this.setBoards(finishedBoards);
+  }
+
+  // Given a starting node, returns a list of all the nodes in the correct order with the correct indentation
+  getNodeTree(topNode) {
+    const result = [];
+    const stack = [[topNode, 0]];
+    while (stack.length > 0) {
+      const currentNode = stack.pop();
+      result.push(currentNode);
+      if (currentNode.expanded) {
+        for (let i = currentNode[0].children.length - 1; i >= 0; i--) {
+          stack.push([currentNode.children[i], currentNode[1] + 1]);
+        }
+      }
+    }
+    return result;
   }
 }

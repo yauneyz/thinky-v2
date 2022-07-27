@@ -1,18 +1,18 @@
 import React, { useContext, useEffect } from "react";
-import { AuthContext, DisplayContext } from "../contexts";
+import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
 
-export default function Saver({ BC }) {
-  const { open, trail, tabs, topNode } = useContext(DisplayContext);
+export default function Saver() {
+  const { open, tabs, topNode } = useContext(DisplayContext);
   const { token } = useContext(AuthContext);
+  const { boards } = useContext(BoardsContext);
 
   const saveSeconds = 2;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const boards = BC.getBoard([]);
       fetch("/boards", {
         method: "POST",
-        body: JSON.stringify({ open, trail, boards, tabs, topNode }),
+        body: JSON.stringify({ open, boards, tabs, topNode }),
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + token,
