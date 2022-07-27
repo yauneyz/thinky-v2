@@ -1,4 +1,4 @@
-exports.getBoards = async (token) => {
+export async function getBoards(token) {
   if (!token) {
     return null;
   }
@@ -8,4 +8,4 @@ exports.getBoards = async (token) => {
       Authorization: "Bearer " + token,
     }),
   }).then((response) => response.json());
-};
+}

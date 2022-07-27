@@ -1,4 +1,4 @@
-exports.getDeletedTabs = (token) => {
+export function getDeletedTabs(token) {
   if (!token) {
     return null;
   }
@@ -8,9 +8,9 @@ exports.getDeletedTabs = (token) => {
       Authorization: "Bearer " + token,
     }),
   }).then((response) => response.json());
-};
+}
 
-exports.deleteTab = async (data) => {
+export async function deleteTab(data) {
   const { token, boards, name, index } = data;
   if (!token) {
     return null;
@@ -24,9 +24,9 @@ exports.deleteTab = async (data) => {
     }),
     body: JSON.stringify(body),
   }).then((response) => response.json());
-};
+}
 
-exports.restoreTab = async (data) => {
+export async function restoreTab(data) {
   const { token, id } = data;
   if (!token) {
     return null;
@@ -40,9 +40,9 @@ exports.restoreTab = async (data) => {
     }),
     body: JSON.stringify(body),
   }).then((response) => response.json());
-};
+}
 
-exports.deleteBoardRequest = async (data) => {
+export async function deleteBoardRequest(data) {
   const { token, board } = data;
   if (!token) {
     return null;
@@ -56,9 +56,9 @@ exports.deleteBoardRequest = async (data) => {
     }),
     body: JSON.stringify(body),
   }).then((response) => response.json());
-};
+}
 
-exports.restoreBoard = async (data) => {
+export async function restoreBoard(data) {
   const { token, id } = data;
   if (!token) {
     return null;
@@ -72,9 +72,9 @@ exports.restoreBoard = async (data) => {
     }),
     body: JSON.stringify(body),
   }).then((response) => response.json());
-};
+}
 
-exports.getDeletedBoards = (token) => {
+export function getDeletedBoards(token) {
   if (!token) {
     return null;
   }
@@ -84,4 +84,4 @@ exports.getDeletedBoards = (token) => {
       Authorization: "Bearer " + token,
     }),
   }).then((response) => response.json());
-};
+}
