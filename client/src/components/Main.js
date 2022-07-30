@@ -26,6 +26,7 @@ const Container2 = memo(styled.div`
 `);
 
 export default function Main() {
+  console.log("Main");
   // Check for authentication
   const { token } = useContext(AuthContext);
   //console.log(token);
@@ -42,6 +43,7 @@ export default function Main() {
   useEffect(() => {
     const getData = async () => {
       try {
+        console.log(token);
         const data = await getBoards(token);
         const { userOpen, userBoards, userTabs, userTopNode } = data;
         setBoards(userBoards);
@@ -51,6 +53,7 @@ export default function Main() {
           topNode: userTopNode,
         });
       } catch (error) {
+        console.log(error);
         setError(true);
       }
     };
@@ -68,7 +71,7 @@ export default function Main() {
     return "Error retrieving data from the server";
   }
 
-  if (!loaded) {
+  if (token === null || !loaded) {
     return "Loading";
   }
 

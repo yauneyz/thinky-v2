@@ -4,16 +4,18 @@ import Main from "./components/Main";
 import Landing from "./components/Landing";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import VerifyEmail from "./components/VerifyEmail";
 import { AuthContext } from "./contexts";
 
 const AppRoutes = () => {
-  const { auth } = useContext(AuthContext);
+  const { auth, emailVerified } = useContext(AuthContext);
+  console.log("Routing");
   return (
     <Routes>
       <Route
         path="/"
         element={
-          <RequireAuth auth={auth}>
+          <RequireAuth auth={auth} emailVerified={emailVerified}>
             <Main />
           </RequireAuth>
         }
@@ -42,15 +44,20 @@ const AppRoutes = () => {
           </SkipIfAuth>
         }
       />
+      <Route path="/verify-email" element={<VerifyEmail />} />
     </Routes>
   );
 };
 
-function RequireAuth({ auth, children }) {
+function RequireAuth({ auth, emailVerified, children }) {
   const location = useLocation();
   // Redirect to the landing page
   if (!auth) {
     return <Navigate to="/landing" state={{ from: location }} replace />;
+  }
+  // Redirect to the email verification page
+  else if (!emailVerified) {
+    return <Navigate to="/verify-email" state={{ from: location }} replace />;
   }
   return children;
 }

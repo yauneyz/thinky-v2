@@ -1,6 +1,7 @@
 const Auth = require("../utils/auth");
 
 const parseAuthToken = async (req, res, next) => {
+  console.log("parseAuthToken");
   if (typeof req.headers.authorization === "undefined") {
     res.user = { success: false, message: "No Auth Header" };
     return next();

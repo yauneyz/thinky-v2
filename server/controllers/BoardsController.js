@@ -3,6 +3,7 @@ const getUser = require("../utils/getUser");
 
 exports.getBoards = async (req, res) => {
   const currentUser = await getUser(req);
+  console.log(currentUser);
 
   if (!currentUser) {
     res.json({ success: false, message: "User not found" });

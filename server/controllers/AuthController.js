@@ -1,4 +1,5 @@
 const User = require("../models/UserModel");
+const FirstBoard = require("../utils/FirstBoard");
 
 exports.register = (req, res) => {
   const { email, uid } = req.body;
@@ -8,19 +9,16 @@ exports.register = (req, res) => {
     } else if (foundUser) {
       res.status(400).send("User already exists");
     } else {
-      const newBoard = {
-        name: "Main",
-        text: "",
-        expanded: true,
-        children: [],
-      };
+      const firstBoard = FirstBoard();
+      console.log("uid", uid);
       const newUser = {
         email,
         uid,
-        boards: newBoard,
+        boards: [firstBoard],
         open: 0,
         trail: [],
         tabs: [],
+        topNode: "ROOT",
       };
 
       const insertedUser = new User(newUser);
@@ -31,6 +29,7 @@ exports.register = (req, res) => {
           res.status(200).send(savedUser);
         }
       });
+      console.log("newUser", newUser);
     }
   });
 };

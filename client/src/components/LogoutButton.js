@@ -9,15 +9,13 @@ const LogoutButtonStyled = styled.button`
 `;
 function LogoutButton() {
   const { Auth } = useContext(FirebaseContext);
-  const { setAuth, setToken } = useContext(AuthContext);
-  const logout = () => {
+  const { logout } = useContext(AuthContext);
+  const doLogout = () => {
     signOut(Auth).then(() => {
-      setAuth(false);
-      setToken(null);
-      window.localStorage.setItem("auth", "false");
+      logout();
     });
   };
-  return <LogoutButtonStyled onClick={logout}>Logout</LogoutButtonStyled>;
+  return <LogoutButtonStyled onClick={doLogout}>Logout</LogoutButtonStyled>;
 }
 
 export default LogoutButton;

@@ -1,4 +1,7 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useContext, useState } from "react";
 import { FirebaseContext } from "../contexts";
 import { AuthForm, AuthLabel, AuthInput, AuthButton } from "./AuthForm";
@@ -20,7 +23,7 @@ function Register() {
 
     // Create the user in firebase
     createUserWithEmailAndPassword(Auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         if (!userCredential) {
           alert("Invalid email/password combination.");
           return;
@@ -31,13 +34,18 @@ function Register() {
         const data = { email, uid };
 
         // Create user in database
-        fetch("/auth/register", {
+        await fetch("/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
           body: JSON.stringify(data),
+        });
+
+        const url = process.env.REACT_APP_FRONTEND_URL;
+        await sendEmailVerification(Auth.currentUser, {
+          url: url,
         });
       })
       .catch((error) => {

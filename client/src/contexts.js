@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import displayReducer from "./reducers/displayReducer";
 import boardReducer from "./reducers/boardReducer";
+import authReducer from "./reducers/authReducer";
 // Track boards
 
 const BoardsContext = React.createContext({ boards: [], setBoards: () => {} });
@@ -143,32 +144,76 @@ const AuthContext = React.createContext({
   setAuth: () => {},
   token: null,
   setToken: () => {},
+  emailVerified: false,
+  setEmailVerified: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
   const { Auth } = useContext(FirebaseContext);
-  const [auth, setAuth] = useState(
-    false || window.localStorage.getItem("auth") === "true"
-  );
-  const [token, setToken] = useState(window.localStorage.getItem("token"));
-  const value = { auth, setAuth, token, setToken };
+  const initialState = {
+    auth: false || window.localStorage.getItem("auth") === "true",
+    setAuth: () => {},
+    token: window.localStorage.getItem("token"),
+    setToken: () => {},
+    emailVerified:
+      false || window.localStorage.getItem("emailVerified") === "true",
+    setEmailVerified: () => {},
+  };
+  const [state, dispatch] = useReducer(authReducer, initialState);
+  const value = {
+    auth: state.auth,
+    setAuth: (auth) => dispatch({ type: "SET_AUTH", auth }),
+    token: state.token,
+    setToken: (token) => dispatch({ type: "SET_TOKEN", token }),
+    emailVerified: state.emailVerified,
+    setEmailVerified: (emailVerified) =>
+      dispatch({ type: "SET_EMAIL_VERIFIED", emailVerified }),
+    authState: state,
+    setAuthState: (state) => dispatch({ type: "SET_AUTH_STATE", state }),
+    logout: () => {
+      Auth.signOut();
+      dispatch({ type: "LOGOUT" });
+      window.localStorage.setItem("auth", false);
+      window.localStorage.setItem("token", null);
+      window.localStorage.setItem("emailVerified", false);
+    },
+  };
   useEffect(() => {
-    onAuthStateChanged(Auth, (user) => {
+    console.log("useEffect");
+    const unsubscribe = onAuthStateChanged(Auth, (user) => {
+      console.log("onAuthStateChanged", user);
       if (user) {
         window.localStorage.setItem("auth", "true");
-        setAuth(true);
+        if (user.emailVerified) {
+          window.localStorage.setItem("emailVerified", "true");
+          value.setAuthState({
+            auth: true,
+            emailVerified: true,
+          });
+        } else {
+          window.localStorage.setItem("emailVerified", "false");
+          value.setAuthState({
+            auth: true,
+            emailVerified: false,
+          });
+        }
         user.getIdToken().then((token) => {
           window.localStorage.setItem("token", token);
-          setToken(token);
+          value.setToken(token);
         });
       } else {
-        setToken(null);
         window.localStorage.setItem("token", "");
-        setAuth(false);
         window.localStorage.setItem("auth", "false");
+        window.localStorage.setItem("emailVerified", "false");
+        value.setAuthState({
+          auth: false,
+          token: null,
+          emailVerified: false,
+        });
       }
     });
-  });
+    return unsubscribe;
+  }, []);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
