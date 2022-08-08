@@ -2,15 +2,15 @@
   "name": "hurricane",
   "version": "1.0.0",
   "description": "Software for generating awesome ideas",
-	"engines": {
-		"node": "16.x"
-	},
+  "engines": {
+    "node": "16.x"
+  },
   "main": "server.js",
   "scripts": {
     "build": "tsc",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
     "start": "node server.js",
-		"start-dev": "nodemon server.js",
+    "start-dev": "nodemon server.js",
     "client": "cd client && npm start",
     "test": "jest",
     "develop": "concurrently --kill-others-on-fail \"npm run start-dev\" \"npm run client\"",
@@ -35,7 +35,8 @@
     "mongoose": "^6.3.1",
     "package.json": "^2.0.1",
     "path": "^0.12.7",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "stripe": "^9.16.0"
   },
   "devDependencies": {
     "concurrently": "^7.1.0",
