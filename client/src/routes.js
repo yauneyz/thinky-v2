@@ -11,7 +11,6 @@ import { AuthContext } from "./contexts";
 
 const AppRoutes = () => {
   const { auth, emailVerified } = useContext(AuthContext);
-  console.log("Routing");
   return (
     <Routes>
       <Route

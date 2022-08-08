@@ -179,9 +179,7 @@ const AuthContextProvider = ({ children }) => {
     },
   };
   useEffect(() => {
-    console.log("useEffect");
     const unsubscribe = onAuthStateChanged(Auth, (user) => {
-      console.log("onAuthStateChanged", user);
       if (user) {
         window.localStorage.setItem("auth", "true");
         if (user.emailVerified) {

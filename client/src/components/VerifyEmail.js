@@ -21,14 +21,12 @@ export default function VerifyEmail() {
       <h1>Verify your email</h1>
       <p>Please check your email for a verification link.</p>
       <button onClick={resendVerificationEmail}>Resend email</button>
+      <p>{"If you don't see an email, please check your spam folder."}</p>
+      <p>{"If you still don't see an email, please contact us."}</p>
       <p>
-        {escape("If you don't see an email, please check your spam folder.")}
-      </p>
-      <p>{escape("If you still don't see an email, please contact us.")}</p>
-      <p>
-        {escape(
+        {
           "If you've already verified your email, please try closing the tab and re-opening the site."
-        )}
+        }
       </p>
     </div>
   );

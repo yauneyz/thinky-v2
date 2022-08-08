@@ -26,7 +26,6 @@ const Container2 = memo(styled.div`
 `);
 
 export default function Main() {
-  console.log("Main");
   // Check for authentication
   const { token } = useContext(AuthContext);
   //console.log(token);
@@ -43,7 +42,6 @@ export default function Main() {
   useEffect(() => {
     const getData = async () => {
       try {
-        console.log(token);
         const data = await getBoards(token);
         const { userOpen, userBoards, userTabs, userTopNode } = data;
         setBoards(userBoards);
@@ -62,6 +60,7 @@ export default function Main() {
 
   // useEffect to set loaded to true once we get the data
   useEffect(() => {
+    console.log(tabs, boards);
     if (tabs && boards.length > 0) {
       setLoaded(true);
     }
