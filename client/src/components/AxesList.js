@@ -46,16 +46,10 @@ const AxesMenuButton = styled.button`
 
 export default function AxesList() {
   const [selected, setSetlected] = useState(null);
-  const { topNode, setTopNode } = useContext(DisplayContext);
-  const {
-    boards,
-    addBoard,
-    moveBoard,
-    getBoard,
-    collapseAll,
-    expandAll,
-    getNodeTree,
-  } = useContext(BoardsContext);
+  const { topNode, setTopNode, setHighlightTarget } =
+    useContext(DisplayContext);
+  const { addBoard, moveBoard, getBoard, collapseAll, expandAll, getNodeTree } =
+    useContext(BoardsContext);
   const topBoard = getBoard(topNode);
 
   const zoomIn = (id) => {
@@ -69,6 +63,7 @@ export default function AxesList() {
   const addTopLevelBoard = () => {
     const newBoard = NewBoard();
     newBoard.parentId = "ROOT";
+    setHighlightTarget(newBoard.id);
     addBoard(newBoard);
   };
 
