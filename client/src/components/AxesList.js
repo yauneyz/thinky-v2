@@ -89,6 +89,7 @@ export default function AxesList() {
     );
   });
 
+  // Drop target to allow dragging to root level
   const ref = useRef(null);
 
   const [{ validDrop }, drop] = useDrop({
