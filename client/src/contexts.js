@@ -18,32 +18,69 @@ const BoardsContextProvider = ({ children }) => {
   const getNodeTree = (topNode) => {
     const result = [];
     const topBoard = state.boards.find((board) => board.id === topNode);
-    const stack = [[topBoard, 0]];
+    let startIndent = 0;
+    let removeTop = false;
+    if (topBoard.id === "ROOT") {
+      startIndent = -1;
+      removeTop = true;
+    }
+    const stack = [[topBoard, startIndent]];
     while (stack.length > 0) {
       const currentNode = stack.pop();
       result.push(currentNode);
       const children = state.boards.filter(
         (board) => board.parentId === currentNode[0].id
       );
-      for (let i = children.length - 1; i >= 0; i--) {
-        stack.push([children[i], currentNode[1] + 1]);
+      if (currentNode[0].expanded) {
+        for (let i = children.length - 1; i >= 0; i--) {
+          stack.push([children[i], currentNode[1] + 1]);
+        }
       }
+    }
+    if (removeTop) {
+      result.shift();
     }
     return result;
   };
 
   const getChildren = (id) => {
+    return state.boards.filter((board) => board.parentId === id);
+  };
+
+  const getDescendants = (id) => {
     const result = [];
     const stack = state.boards.filter((board) => board.parentId === id);
     while (stack.length > 0) {
       const childId = stack.pop();
       const newChildren = state.boards.filter(
-        (board) => board.parentId === childId
+        (board) => board.parentId === childId.id
       );
       result.push(childId);
       stack.push(...newChildren);
     }
     return result;
+  };
+
+  const getChildIds = (id) => {
+    const children = getChildren(id);
+    return children.map((child) => child.id);
+  };
+
+  const getDescendantIds = (id) => {
+    const children = getDescendants(id);
+    return children.map((child) => child.id);
+  };
+
+  const expandBelow = (id) => {
+    const ids = getDescendantIds(id);
+    ids.push(id);
+    dispatch({ type: "EXPAND_GROUP", ids });
+  };
+
+  const collapseBelow = (id) => {
+    const ids = getDescendantIds(id);
+    ids.push(id);
+    dispatch({ type: "COLLAPSE_GROUP", ids });
   };
 
   const boardsValue = {
@@ -57,6 +94,8 @@ const BoardsContextProvider = ({ children }) => {
     toggleExpanded: (id) => dispatch({ type: "TOGGLE_EXPANDED", id }),
     collapseAll: () => dispatch({ type: "COLLAPSE_ALL" }),
     expandAll: () => dispatch({ type: "EXPAND_ALL" }),
+    collapseBelow,
+    expandBelow,
     setParent: (id, parentId) => dispatch({ type: "MOVE_BOARD", id, parentId }),
     getBoard: (id) => state.boards.find((board) => board.id === id),
     moveBoard: (id, parentId) => dispatch({ type: "MOVE_BOARD", id, parentId }),
@@ -71,6 +110,9 @@ const BoardsContextProvider = ({ children }) => {
     },
     getNodeTree,
     getChildren,
+    getChildIds,
+    getDescendants,
+    getDescendantIds,
   };
 
   return (

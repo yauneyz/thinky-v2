@@ -2,7 +2,7 @@ import styled from "styled-components";
 import React, { useContext, useRef, useState } from "react";
 import { AuthContext, DisplayContext } from "../contexts";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../constants";
+import { ItemTypes } from "../constants/itemTypes";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteTab } from "../api/undo";
 

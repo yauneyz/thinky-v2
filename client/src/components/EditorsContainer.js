@@ -4,7 +4,7 @@ import { BoardsContext, DisplayContext } from "../contexts";
 import styled from "styled-components";
 import arrayEquals from "array-equal";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../constants";
+import { ItemTypes } from "../constants/itemTypes";
 import TabBar from "./TabBar";
 
 // Styled component with column flex layout

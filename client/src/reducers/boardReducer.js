@@ -54,6 +54,9 @@ export default function boardReducer(state, action) {
       return {
         ...state,
         boards: boards.map((board) => {
+          if (board.id === "ROOT") {
+            return { ...board, expanded: true };
+          }
           return { ...board, expanded: false };
         }),
       };
@@ -65,10 +68,33 @@ export default function boardReducer(state, action) {
           return { ...board, expanded: true };
         }),
       };
-    case "EXPAND_BELOW":
-      return;
-    case "COLLAPSE_BELOW":
-      return;
+    case "EXPAND_GROUP":
+      var newBoards = boards.map((board) => {
+        if (action.ids.includes(board.id)) {
+          return { ...board, expanded: true };
+        }
+        return board;
+      });
+      return {
+        ...state,
+        boards: boards.map((board) => {
+          if (action.ids.includes(board.id)) {
+            return { ...board, expanded: true };
+          }
+          return board;
+        }),
+      };
+
+    case "COLLAPSE_GROUP":
+      return {
+        ...state,
+        boards: boards.map((board) => {
+          if (action.ids.includes(board.id)) {
+            return { ...board, expanded: false };
+          }
+          return board;
+        }),
+      };
 
     case "MOVE_BOARD":
       return {

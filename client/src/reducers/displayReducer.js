@@ -57,6 +57,13 @@ function displayReducer(state, action) {
       return { ...state, tabs: newTabs };
     }
 
+    case "ADD_TAB": {
+      const newTabs = produce(tabs, (draft) => {
+        draft.push(action.tab);
+      });
+      return { ...state, tabs: newTabs, open: tabs.length };
+    }
+
     case "RENAME_TAB":
       return {
         ...state,

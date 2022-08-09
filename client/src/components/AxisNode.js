@@ -6,7 +6,8 @@ import { Menu, MenuItem } from "@mui/material";
 import { deleteBoardRequest } from "../api/undo";
 import { useMutation, useQueryClient } from "react-query";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../constants";
+import { ItemTypes } from "../constants/itemTypes";
+import { ArrowColors } from "../constants/colors";
 
 function ArrowBase({ className, toggleExpanded }) {
   return <div className={className} onClick={toggleExpanded}></div>;
@@ -15,14 +16,19 @@ function ArrowBase({ className, toggleExpanded }) {
 const Arrow = styled(ArrowBase)`
   width: 0;
   height: 0;
-  border-top: ${(props) =>
-    props.expanded && props.hasChildren
-      ? "5px solid #fff"
-      : "5px solid transparent"};
-  border-left: ${(props) =>
-    props.expanded || !props.hasChildren
+  border-top: ${(props) => {
+    const colorString = "5px solid " + props.color;
+    return props.expanded && props.hasChildren
+      ? colorString
+      : "5px solid transparent";
+  }};
+
+  border-left: ${(props) => {
+    const colorString = "5px solid " + props.color;
+    return props.expanded || !props.hasChildren
       ? "5px solid transparent"
-      : "5px solid #fff"};
+      : colorString;
+  }};
   border-right: ${(props) =>
     props.expanded || !props.hasChildren
       ? "5px solid transparent"
@@ -85,18 +91,26 @@ const AxisNodeBase = ({
     addBoard,
     deleteBoard,
     toggleExpanded,
+    collapseBelow,
+    expandBelow,
     isChild,
     moveBoard,
     renameBoard,
     getChildren,
+    getDescendants,
     reorderBoards,
   } = useContext(BoardsContext);
   const [hover, setHover] = useState(false);
   const [editable, setEditable] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mouse, setMouse] = useState({ X: null, Y: null });
-  const { openEditor, closeEditors, highlightTarget, setHighlightTarget } =
-    useContext(DisplayContext);
+  const {
+    openEditor,
+    closeEditors,
+    highlightTarget,
+    setHighlightTarget,
+    addTab,
+  } = useContext(DisplayContext);
 
   const queryClient = useQueryClient();
   const deleteAxisMutation = useMutation(
@@ -134,12 +148,12 @@ const AxisNodeBase = ({
     if (hover) {
       // Zoom in
       if (e.key === "z") {
+        e.preventDefault();
         zoomIn(id);
       }
 
       // Add a new node
       if (e.key === "a") {
-        console.log("add node");
         e.preventDefault();
         let newBoard = NewBoard();
         newBoard.parentId = board.id;
@@ -149,7 +163,31 @@ const AxisNodeBase = ({
 
       // Open the editor
       if (e.key === "q") {
+        e.preventDefault();
         openEditor(id);
+      }
+
+      // Create a new tab with this node open
+      if (e.key === "t") {
+        e.preventDefault();
+        const newTab = {
+          name: board.title,
+          editors: [],
+        };
+        addTab(newTab);
+      }
+
+      // Open in a new tab with all its children open
+      if (e.key === "w") {
+        e.preventDefault();
+        const newTab = {
+          name: board.title,
+          editors: [],
+        };
+        addTab(newTab);
+        getChildren(id).forEach((child) => {
+          openEditor(child.id);
+        });
       }
     }
   };
@@ -161,11 +199,21 @@ const AxisNodeBase = ({
     };
 
     const deleteNode = () => {
-      const children = getChildren(board.id);
+      const children = getDescendants(board.id);
       closeEditors(children);
       const deletedBoardData = { board, token };
       deleteAxisMutation.mutate(deletedBoardData);
       deleteBoard(id);
+      handleClose();
+    };
+
+    const handleCollapseBelow = () => {
+      collapseBelow(id);
+      handleClose();
+    };
+
+    const handleExpandBelow = () => {
+      expandBelow(id);
       handleClose();
     };
 
@@ -181,7 +229,9 @@ const AxisNodeBase = ({
               : undefined
           }
         >
-          {id !== "ROOT" && <MenuItem onClick={deleteNode}>Delete</MenuItem>}
+          <MenuItem onClick={deleteNode}>Delete</MenuItem>
+          <MenuItem onClick={handleExpandBelow}>Expand Below</MenuItem>
+          <MenuItem onClick={handleCollapseBelow}>Collapse Below</MenuItem>
         </Menu>
       </div>
     );
@@ -274,6 +324,8 @@ const AxisNodeBase = ({
   }
   const opacity = isDragging ? 0.5 : 1;
 
+  const ArrowColor = ArrowColors[indent % ArrowColors.length];
+
   return (
     <div>
       {/* Display the axis itself */}
@@ -301,6 +353,7 @@ const AxisNodeBase = ({
           }}
           expanded={board.expanded}
           toggleExpanded={handleToggle}
+          color={ArrowColor}
         />
         {effectiveEditable ? (
           <RenameInput

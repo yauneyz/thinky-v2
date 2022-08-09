@@ -4,7 +4,6 @@ import TitleBar from "./TitleBar";
 import Trail from "./Trail";
 import AxesList from "./AxesList";
 import Editors from "./EditorsContainer";
-import BoardsController from "../utils/BoardsController";
 import { getBoards } from "../api/boards";
 import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
 import Saver from "./Saver";
@@ -60,11 +59,10 @@ export default function Main() {
 
   // useEffect to set loaded to true once we get the data
   useEffect(() => {
-    console.log(tabs, boards);
     if (tabs && boards.length > 0) {
       setLoaded(true);
     }
-  }, [tabs, boards]);
+  }, [tabs, boards, token]);
 
   if (error) {
     return "Error retrieving data from the server";
