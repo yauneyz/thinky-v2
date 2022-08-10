@@ -106,18 +106,6 @@ export default function boardReducer(state, action) {
           return board;
         }),
       };
-    // if drag occurs before drop, its new index in boards should be after drop. if it occurs after, it should be moved to before
-    case "REORDER_BOARDS":
-      return {
-        ...state,
-        boards: produce(boards, (draft) => {
-          if (action.dragIndex < action.dropIndex) {
-            move(draft, action.dragIndex, action.dropIndex + 1);
-          } else {
-            move(draft, action.dragIndex, action.dropIndex);
-          }
-        }),
-      };
 
     default:
       throw new Error(`Unhandled action type: ${action.type}`);

@@ -98,7 +98,6 @@ const AxisNodeBase = ({
     renameBoard,
     getChildren,
     getDescendants,
-    reorderBoards,
   } = useContext(BoardsContext);
   const [hover, setHover] = useState(false);
   const [editable, setEditable] = useState(false);
@@ -288,7 +287,6 @@ const AxisNodeBase = ({
         return;
       }
       // Time to actually perform the action
-      reorderBoards(dragId, hoverId, dragIndex, hoverIndex);
       item.index = hoverId;
     },
     // can drop if the item is not one of the board's children
