@@ -96,6 +96,18 @@ export default function boardReducer(state, action) {
         }),
       };
 
+    case "REORDER_BOARDS":
+      return {
+        ...state,
+        boards: produce(boards, (draft) => {
+          if (action.dragIndex < action.dropIndex) {
+            move(draft, action.dragIndex, action.dropIndex + 1);
+          } else {
+            move(draft, action.dragIndex, action.dropIndex);
+          }
+        }),
+      };
+
     case "MOVE_BOARD":
       return {
         ...state,

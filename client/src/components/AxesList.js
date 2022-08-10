@@ -90,24 +90,15 @@ export default function AxesList() {
   const [{ validDrop }, drop] = useDrop({
     accept: ItemTypes.BOARD,
     collect: (monitor) => ({
-      validDrop: monitor.canDrop() && monitor.isOver(),
+      validDrop: monitor.canDrop() && monitor.isOver({ shallow: true }),
     }),
-    hover(item, _monitor) {
-      if (!ref.current) {
-        return;
-      }
-      // Ignore dragging top level boards
-      if (item.parentId === "ROOT") {
-        return;
-      }
-    },
     // can drop if the item is not one of the board's children
     canDrop: (item, _monitor) => {
       return item.parentId !== "ROOT";
     },
     drop: (item, monitor) => {
       debugger;
-      if (!monitor.isOver() || monitor.didDrop()) {
+      if (!monitor.isOver({ shallow: true }) || monitor.didDrop()) {
         return;
       }
       const dragId = item.id;
