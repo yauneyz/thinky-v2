@@ -30,7 +30,7 @@ export default function Main() {
   //console.log(token);
 
   // The application state
-  const { tabs, setDisplayState } = useContext(DisplayContext);
+  const { topNode, setDisplayState } = useContext(DisplayContext);
   const { boards, setBoards } = useContext(BoardsContext);
 
   // Make sure we load properly before proceeding
@@ -59,10 +59,10 @@ export default function Main() {
 
   // useEffect to set loaded to true once we get the data
   useEffect(() => {
-    if (tabs && boards.length > 0) {
+    if (topNode && boards.length > 0) {
       setLoaded(true);
     }
-  }, [tabs, boards, token]);
+  }, [topNode, boards, token]);
 
   if (error) {
     return "Error retrieving data from the server";

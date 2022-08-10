@@ -145,7 +145,9 @@ function EditorsList({ className }) {
     return <div className={className}></div>;
   }
 
-  const effectiveOpen = Math.min(open, tabs.length - 1);
+  console.log("o", open);
+  const effectiveOpen = Math.max(Math.min(open, tabs.length - 1), 0);
+  console.log("e", effectiveOpen);
   const editorsList = tabs[effectiveOpen].editors.map((id, index) => {
     return <Editor key={id} boardId={id} index={index} />;
   });
