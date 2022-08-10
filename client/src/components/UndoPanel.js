@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import TransparentButton from "../utils/TransparentButton";
+import Tooltip from "@mui/material/Tooltip";
 import { DisplayContext, AuthContext, BoardsContext } from "../contexts";
 import { FontAwesomeIcon as Icon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
@@ -139,9 +140,11 @@ export default function UndoPanel({ BC }) {
   return (
     <div>
       <div>
-        <TransparentButton onClick={openModal}>
-          <Icon icon={faTrashCan} inverse />
-        </TransparentButton>
+        <Tooltip title="Open Trash Panel" placement="top">
+          <TransparentButton onClick={openModal}>
+            <Icon icon={faTrashCan} className="faIcon" />
+          </TransparentButton>
+        </Tooltip>
       </div>
       <Modal
         isOpen={isOpen}

@@ -1,3 +1,4 @@
+import colorscheme from "./colorscheme";
 const ArrowColors = [
   "#fe5f55ff",
   "#2b50aaff",

@@ -2,112 +2,12 @@ html,body, #root{
   width:100%;
 	height: 100%;
 }
-.wrapper{
-	margin: 0;
-	background: #2b2929;
-	width:100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-}
 
-.wrapper2{
-	display: flex;
-	height: 100%;
-}
-
-.title-bar{
-	height: 3em;
-	display: flex;
-}
-
-.title{
-	font-size: 2em;
-	font-weight: bold;
-	margin-left: 1em;
-	color: #e9241d;
-	/*color: #878681;*/
-}
-
-.wiki{
-	color: white;
-	font-size:1em;
-	margin: 5px;
-	align-self: center;
-	margin-left: auto;
-}
-
-.node-bar{
-	height: 3em;
-	/*background-image: linear-gradient(#ffb8b3, #910101,#910101,#910101,#910101,#ffb8b3 );*/
-	background-color: #910101;
-	display: flex;
-	align-content: center;
-}
-
-
-.node-item{
-	display: inline-block;
-	color: white;
-	font-size: 0.8;
-	margin: 5px;
-	font-family: 'Open Sans', sans-serif;
-	font-weight: bold;
-}
-
-.node-item:hover, .child-node:hover{
-	text-shadow: 0 0 3px #FF0000;
-}
-
-.child-node{
-	display: block;
-	margin: 8px;
-}
-
-
-.node-item:after{
-	content: " >";
-}
-
-.node-item:hover{
-	text-shadow: white;
-}
-
-.child-bar{
-	width: 14em;
-	/*border-right: 2px #910101;*/
-	border-right: 5px solid #910101;
-	border-right: 5px solid #910101;
-	justify-content: start;
-	display: flex;
-	flex-direction: column;
-}
-
-.child-list{
-	height: 100%;
-	width: 100%;
-	list-style-type: none;
-}
-.editor{
-	flex: 1;
-}
-
-.editor-box{
-	width:100%;
-	display: flex;
-}
-
-.child-node{
-	color: white;
-	font-size: 1em;
-	font-family: 'Open Sans', sans-serif;
-	font-weight: bold;
-}
-
-.add-child-button{
-	width: 50%;
-	margin: auto;
-	margin-top: 5px;
+.faIcon{
+	color: black;
+	&:hover{
+		color: #00bcd4;
+	}
 }
 
 .ReactModal__Overlay {

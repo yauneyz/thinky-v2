@@ -1,16 +1,22 @@
 import styled from "styled-components";
 import React, { useContext, useRef, useState } from "react";
 import { AuthContext, DisplayContext } from "../contexts";
+import Tooltip from "@mui/material/Tooltip";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../constants/itemTypes";
 import { useMutation, useQueryClient } from "react-query";
 import { deleteTab } from "../api/undo";
+import colorscheme from "../constants/colorscheme";
+import fonts from "../constants/fonts";
 
 const TabBarContainer = styled.div`
   height: 2em;
   width: 100%;
   background: #ddd;
   display: flex;
+  font-family: ${fonts.heading};
+  background: ${colorscheme.quartenary};
+  border-bottom: 2px solid ${colorscheme.secondary};
 `;
 
 const TabDeleteButton = styled.span`
@@ -18,9 +24,10 @@ const TabDeleteButton = styled.span`
   font-size: 1em;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 0.5em;
   margin-left: auto;
   &:hover {
-    background: red;
+    background: ${colorscheme.red};
     color: white;
   }
   margin-right: 5px;
@@ -29,6 +36,10 @@ const TabDeleteButton = styled.span`
 const TabTitle = styled.div`
   display: inline-block;
   margin-left: 5px;
+  max-width: 6em;
+  overflow: hidden;
+  padding-right: 2em;
+  white-space: nowrap;
 `;
 
 const TabTitleInput = styled.input`
@@ -150,12 +161,19 @@ function TabButtonBase({
 
 const TabButton = styled(TabButtonBase)`
   background: ${(props) => (props.open === props.index ? "#fff" : "gray")};
+  color: ${(props) => (props.open === props.index ? "black" : "white")};
   width: 8em;
-  border-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
   margin: 1px;
   margin-bottom: 0;
   display: flex;
   align-items: center;
+  &:hover {
+    background: ${colorscheme.secondary};
+    color: ${colorscheme.text};
+    cursor: pointer;
+  }
 `;
 
 //A button for adding a tabs
@@ -168,7 +186,7 @@ const AddTabButton = styled.button`
   margin-left: auto;
   margin-right: 0.5em;
   &:hover {
-    background: green;
+    background: ${colorscheme.green};
   }
 `;
 

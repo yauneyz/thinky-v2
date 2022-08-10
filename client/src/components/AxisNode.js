@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components";
 import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
+import Tooltip from "@mui/material/Tooltip";
 import NewBoard from "../utils/NewBoard";
 import { Menu, MenuItem } from "@mui/material";
 import { deleteBoardRequest } from "../api/undo";
@@ -8,6 +9,22 @@ import { useMutation, useQueryClient } from "react-query";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../constants/itemTypes";
 import { ArrowColors } from "../constants/colors";
+import colorscheme from "../constants/colorscheme";
+import fonts from "../constants/fonts";
+import { Parser as HtmlToReactParser } from "html-to-react";
+
+// Formats the input text as html for the tooltip
+// Only keep the first 20 lines
+function formatBoardHTML(title, text) {
+  let titleElement;
+  titleElement =
+    "<h3 style='border-bottom: 1px solid white'>" + title + "</h3>";
+  const lines = text.split("\n");
+  const body = lines.slice(0, 20).join("<br />");
+  const html = `${titleElement}${body}`;
+  console.log(html);
+  return html;
+}
 
 function ArrowBase({ className, toggleExpanded }) {
   return <div className={className} onClick={toggleExpanded}></div>;
@@ -39,19 +56,25 @@ const Arrow = styled(ArrowBase)`
   margin-left: ${(props) =>
     props.expanded && props.hasChildren ? "0" : "2.5px"};
   margin-right: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const AxisTitle = styled.span`
   display: inline-block;
-  color: white;
+  color: ${colorscheme.contrastText};
   cursor: pointer;
   &:hover {
-    color: #0066ff;
+    color: ${colorscheme.secondary};
   }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 8em;
+  font-family: ${fonts.heading};
 `;
 
 const AxisNodeContainer = styled.div`
@@ -59,12 +82,13 @@ const AxisNodeContainer = styled.div`
   margin: 0 0 0 ${({ indent }) => 0.2 + indent * 0.5}rem;
   padding: 0;
   display: flex;
+  transition: all 0.2s ease-in-out;
 `;
 
 const RenameInput = styled.input`
   border: none;
   background: transparent;
-  color: white;
+  color: ${colorscheme.contrastText};
   display: inline-block;
   padding: 0;
   margin: 0;
@@ -113,6 +137,7 @@ const AxisNodeBase = ({
   } = useContext(DisplayContext);
 
   const queryClient = useQueryClient();
+  const htmlParser = new HtmlToReactParser();
   const deleteAxisMutation = useMutation(
     (data) => {
       return deleteBoardRequest(data);
@@ -376,15 +401,26 @@ const AxisNodeBase = ({
             onKeyDown={renameHandleKeyDown}
           />
         ) : (
-          <AxisTitle
-            onDoubleClick={() => {
-              setEditable(true);
-            }}
-            tabIndex={0}
-            onKeyDown={treeKeyCommands}
+          <Tooltip
+            title={
+              <React.Fragment>
+                <div>
+                  {htmlParser.parse(formatBoardHTML(board.title, board.text))}
+                </div>
+              </React.Fragment>
+            }
+            placement="right"
           >
-            {board.title}
-          </AxisTitle>
+            <AxisTitle
+              onDoubleClick={() => {
+                setEditable(true);
+              }}
+              tabIndex={0}
+              onKeyDown={treeKeyCommands}
+            >
+              {board.title}
+            </AxisTitle>
+          </Tooltip>
         )}
       </AxisNodeContainer>
       <NodeMenu />

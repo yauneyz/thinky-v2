@@ -1,12 +1,18 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { BoardsContext, DisplayContext } from "../contexts";
+import colorscheme from "../constants/colorscheme";
 
 const TrailBar = styled.div`
-  height: 3em;
-  background-color: #910101;
+  height: 2em;
   display: flex;
   align-content: center;
+  background: linear-gradient(
+    to right,
+    ${colorscheme.secondary},
+    ${colorscheme.tertiary}
+  );
+  box-shadow: 0 0 4px ${colorscheme.secondary};
 `;
 
 const TrailNodeText = styled.div`
@@ -17,7 +23,7 @@ const TrailNodeText = styled.div`
   font-weight: bold;
   vertical-align: middle;
   &:hover {
-    text-shadow: 0px 0px 4px red;
+    text-shadow: 0px 0px 4px ${colorscheme.tertiary};
   }
   &:after {
     content: " >";

@@ -3,6 +3,7 @@ import { BoardsContext, DisplayContext } from "../contexts";
 import styled from "styled-components";
 import { produce } from "immer";
 import { TextField, ClickAwayListener } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "../constants/itemTypes";
 import AxisNode from "./AxisNode";
@@ -15,14 +16,15 @@ import {
   faExpand,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import colorscheme from "../constants/colorscheme";
 
 const AxesWrapper = styled.div`
   width: 14em;
-  border-right: 5px solid #910101;
   justify-content: start;
   display: flex;
   flex-direction: column;
   overflow: auto;
+  margin-top: 0.3em;
 `;
 
 const AxesListMenu = styled.div`
@@ -32,7 +34,8 @@ const AxesListMenu = styled.div`
   align-items: center;
   height: 1em;
   margin-bottom: 2px;
-  background: red;
+  border-bottom: 1px solid ${colorscheme.contastText};
+  padding-bottom: 3px;
 `;
 
 const AxesMenuButton = styled.button`
@@ -57,6 +60,9 @@ export default function AxesList() {
   };
 
   const zoomOut = () => {
+    if (topNode === "ROOT") {
+      return;
+    }
     setTopNode(topBoard.parentId);
   };
 
@@ -110,23 +116,34 @@ export default function AxesList() {
 
   let backgroundColor = validDrop ? "green" : "transparent";
 
+  const invertIcons = false;
+  const invertStyle = invertIcons ? "invert" : "";
+
   // Generate the list of axes
   return (
     <AxesWrapper ref={ref} style={{ backgroundColor }}>
       <AxesListMenu>
-        <AxesMenuButton onClick={zoomOut}>
-          <Icon icon={faArrowUp} size="lg" inverse />
-        </AxesMenuButton>
-        <AxesMenuButton onClick={expandAll}>
-          <Icon icon={faExpand} size="lg" inverse />
-        </AxesMenuButton>
-        <AxesMenuButton onClick={collapseAll}>
-          <Icon icon={faMinimize} size="lg" inverse />
-        </AxesMenuButton>
+        <Tooltip title="Zoom Out" placement="top">
+          <AxesMenuButton onClick={zoomOut}>
+            <Icon icon={faArrowUp} size="lg" className="faIcon" />
+          </AxesMenuButton>
+        </Tooltip>
+        <Tooltip title="Expand All" placement="top">
+          <AxesMenuButton onClick={expandAll}>
+            <Icon icon={faExpand} size="lg" className="faIcon" />
+          </AxesMenuButton>
+        </Tooltip>
+        <Tooltip title="Collapse All" placement="top">
+          <AxesMenuButton onClick={collapseAll}>
+            <Icon icon={faMinimize} size="lg" className="faIcon" />
+          </AxesMenuButton>
+        </Tooltip>
         <UndoPanel />
-        <AxesMenuButton onClick={addTopLevelBoard}>
-          <Icon icon={faPlus} size="lg" inverse />
-        </AxesMenuButton>
+        <Tooltip title="Add Top Level Board" placement="top">
+          <AxesMenuButton onClick={addTopLevelBoard}>
+            <Icon icon={faPlus} size="lg" className="faIcon" />
+          </AxesMenuButton>
+        </Tooltip>
       </AxesListMenu>
       {axes}
     </AxesWrapper>

@@ -4,7 +4,6 @@ import TitleBar from "./TitleBar";
 import Trail from "./Trail";
 import AxesList from "./AxesList";
 import Editors from "./EditorsContainer";
-import LoadingPage from "./LoadingPage";
 import { getBoards } from "../api/boards";
 import { AuthContext, BoardsContext, DisplayContext } from "../contexts";
 import Saver from "./Saver";
@@ -24,6 +23,8 @@ const AppContainer = memo(styled.div`
 const Container2 = memo(styled.div`
   display: flex;
   height: 100%;
+	flex-grow: 1;
+	flex-shrink: 1;
 `);
 
 export default function Main() {
@@ -71,7 +72,7 @@ export default function Main() {
   }
 
   if (token === null || !loaded) {
-    return <LoadingPage />;
+    return "Loading";
   }
 
   return (

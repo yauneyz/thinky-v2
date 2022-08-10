@@ -7,9 +7,6 @@ const TransparentButton = styled.button`
   cursor: pointer;
   outline: none;
   padding: 0;
-  &:hover {
-    box-shadow: 0 0 0 1px red;
-  }
 `;
 
 export default TransparentButton;

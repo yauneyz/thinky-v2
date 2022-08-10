@@ -5,6 +5,7 @@ import Landing from "./components/Landing";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import VerifyEmail from "./components/VerifyEmail";
+import LoadingPage from "./components/LoadingPage";
 import CheckoutSuccess from "./components/CheckoutSuccess";
 import CheckoutCancel from "./components/CheckoutCancel";
 import { AuthContext } from "./contexts";
@@ -48,6 +49,7 @@ const AppRoutes = () => {
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="checkout-success" element={<CheckoutSuccess />} />
       <Route path="checkout-cancel" element={<CheckoutCancel />} />
+      <Route path="loading" element={<LoadingPage />} />
     </Routes>
   );
 };

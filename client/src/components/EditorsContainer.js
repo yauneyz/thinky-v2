@@ -6,6 +6,8 @@ import arrayEquals from "array-equal";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../constants/itemTypes";
 import TabBar from "./TabBar";
+import colorscheme from "../constants/colorscheme";
+import fonts from "../constants/fonts";
 
 // Styled component with column flex layout
 const Container = styled.div`
@@ -13,6 +15,7 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  overflow-x: scroll;
 `;
 
 const EditorsContainer = styled.div`
@@ -20,32 +23,54 @@ const EditorsContainer = styled.div`
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  background-color: ${colorscheme.tertiary};
 `;
 
 const EditorText = styled.textarea`
   width: 100%;
-  //height: 100%;
   height: calc(100% - 24px);
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
   border-radius: 4px;
+  font-family: ${fonts.body};
+  font-size: 14px;
+  padding: 8px;
+  &:focus {
+    outline: none;
+    border: 1px solid ${colorscheme.secondary};
+    box-shadow: 0 0 8px ${colorscheme.secondary};
+  }
 `;
 
 const EditorTitleBar = styled.div`
   display: flex;
   justify-content: center;
   height: 1.5em;
+  background-color: ${colorscheme.secondary};
 `;
 
 const EditorTitle = styled.div`
   margin: auto;
   color: white;
+  font-family: ${fonts.heading};
 `;
 
 const DeleteButton = styled.button`
   margin-left: auto;
   margin-right: 10px;
+  height: 1rem;
+  width: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 0;
+  line-height: 0.5rem;
+  border: none;
+  border-radius: 3px;
+  &:hover {
+    cursor: pointer;
+    background: ${colorscheme.red};
+    color: white;
+  }
 `;
 
 function EditorBase({ className, children, boardId, index }) {
@@ -121,7 +146,7 @@ function EditorBase({ className, children, boardId, index }) {
     <div style={{ opacity }} className={className}>
       <EditorTitleBar ref={ref}>
         <EditorTitle>{board.title}</EditorTitle>
-        <DeleteButton onClick={() => closeEditor(boardId)}>X</DeleteButton>
+        <DeleteButton onClick={() => closeEditor(boardId)}>x</DeleteButton>
       </EditorTitleBar>
       <EditorText
         value={board.text}
@@ -145,9 +170,7 @@ function EditorsList({ className }) {
     return <div className={className}></div>;
   }
 
-  console.log("o", open);
   const effectiveOpen = Math.max(Math.min(open, tabs.length - 1), 0);
-  console.log("e", effectiveOpen);
   const editorsList = tabs[effectiveOpen].editors.map((id, index) => {
     return <Editor key={id} boardId={id} index={index} />;
   });
