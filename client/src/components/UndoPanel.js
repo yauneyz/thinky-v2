@@ -109,11 +109,8 @@ export default function UndoPanel({ BC }) {
         </Undo>
       );
     });
-  } else {
-    deletedTabs = <div></div>;
   }
-
-  let deletedAxes = [];
+  let deletedAxes = <div></div>;
   if (axesStatus == "success") {
     const clone = [...axesData];
     axesData.reverse();
@@ -137,10 +134,7 @@ export default function UndoPanel({ BC }) {
         </Undo>
       );
     });
-  } else {
-    deletedAxes = <div></div>;
   }
-
   return (
     <div>
       <div>

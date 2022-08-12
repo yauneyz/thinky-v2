@@ -22,6 +22,7 @@ const light = {
   green: "rgb(46,164,79)",
   contrastText: "black",
   text: "white",
+  transparentWhite: "rgba(255, 255, 255, 0.3)",
 };
 
 export default light;

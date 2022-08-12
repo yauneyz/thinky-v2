@@ -4,7 +4,13 @@ import {
 } from "firebase/auth";
 import React, { useContext, useState } from "react";
 import { FirebaseContext } from "../contexts";
-import { AuthForm, AuthLabel, AuthInput, AuthButton } from "./AuthForm";
+import {
+  AuthContainer,
+  AuthBackground,
+  AuthTitle,
+  AuthForm,
+  AuthInput,
+} from "./AuthForm";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -62,39 +68,38 @@ function Register() {
   };
 
   return (
-    <AuthForm onSubmit={handleSubmit}>
-      <div>
-        <AuthLabel>
-          Email
-          <AuthInput
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </AuthLabel>
-      </div>
-      <div>
-        <AuthLabel>
-          Password
-          <AuthInput
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </AuthLabel>
-        <div>
-          <AuthLabel>
-            Confirm Password
+    <AuthBackground>
+      <AuthContainer>
+        <AuthForm onSubmit={handleSubmit}>
+          <AuthTitle>Register</AuthTitle>
+          <div>
+            <AuthInput
+              type="text"
+              value={email}
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div>
             <AuthInput
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={password}
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
             />
-          </AuthLabel>
-        </div>
-      </div>
-      <AuthButton type="submit">Log In</AuthButton>
-    </AuthForm>
+            <div>
+              <AuthInput
+                type="password"
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+          </div>
+          <AuthInput type="submit" value="Register" />{" "}
+        </AuthForm>
+      </AuthContainer>
+    </AuthBackground>
   );
 }
 export default Register;

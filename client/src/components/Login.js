@@ -1,5 +1,11 @@
 import React, { useState, useContext } from "react";
-import { AuthForm, AuthLabel, AuthInput, AuthButton } from "./AuthForm";
+import {
+  AuthContainer,
+  AuthBackground,
+  AuthTitle,
+  AuthForm,
+  AuthInput,
+} from "./AuthForm";
 import { FirebaseContext } from "../contexts";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -24,31 +30,30 @@ function Login() {
     });
   };
   return (
-    <div>
-      <AuthForm onSubmit={handleSubmit}>
-        <div>
-          <AuthLabel>
-            Email
+    <AuthBackground>
+      <AuthContainer>
+        <AuthForm onSubmit={handleSubmit}>
+          <AuthTitle>Login</AuthTitle>
+          <div>
             <AuthInput
               type="text"
               value={email}
+              placeholder="Email"
               onChange={(e) => setEmail(e.target.value)}
             />
-          </AuthLabel>
-        </div>
-        <div>
-          <AuthLabel>
-            Password
+          </div>
+          <div>
             <AuthInput
               type="password"
               value={password}
+              placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
             />
-          </AuthLabel>
-        </div>
-        <AuthButton type="submit">Log In</AuthButton>
-      </AuthForm>
-    </div>
+          </div>
+          <AuthInput type="submit" value="Sign In" />
+        </AuthForm>
+      </AuthContainer>
+    </AuthBackground>
   );
 }
 export default Login;
