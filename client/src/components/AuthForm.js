@@ -60,7 +60,9 @@ export const AuthInput = styled.input`
     box-shadow: 4px 4px 60px rgba (0, 0, 0, 0.2);
   }
 
-  &[type="submit"] {
+  &[type="submit"],
+  &[type="button"] {
+    font-size: 0.95em;
     color: ${colorscheme.contrastText};
     font-family: ${fonts.heading};
   }
