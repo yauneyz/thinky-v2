@@ -6,6 +6,7 @@ import {
   AuthContainer,
   AuthTitle,
   AuthInput,
+  AuthForm,
 } from "./AuthForm";
 
 export default function VerifyEmail() {
@@ -25,19 +26,21 @@ export default function VerifyEmail() {
   return (
     <AuthBackground>
       <AuthContainer>
-        <AuthTitle>Verify your email</AuthTitle>
-        <AuthInput
-          type="button"
-          onClick={resendVerificationEmail}
-          value="Resend Verification Email"
-        />
-        <p>{"If you don't see an email, please check your spam folder."}</p>
-        <p>{"If you still don't see an email, please contact us."}</p>
-        <p>
-          {
-            "If you've already verified your email, please try closing the tab and re-opening the site."
-          }
-        </p>
+        <AuthForm>
+          <AuthTitle>Verify your email</AuthTitle>
+          <AuthInput
+            type="button"
+            onClick={resendVerificationEmail}
+            value="Resend Verification Email"
+          />
+          <p>{"If you don't see an email, please check your spam folder."}</p>
+          <p>{"If you still don't see an email, please contact us."}</p>
+          <p>
+            {
+              "If you've already verified your email, please try closing the tab and re-opening the site."
+            }
+          </p>
+        </AuthForm>
       </AuthContainer>
     </AuthBackground>
   );

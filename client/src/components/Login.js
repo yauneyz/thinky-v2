@@ -5,9 +5,11 @@ import {
   AuthTitle,
   AuthForm,
   AuthInput,
+  ResetPasswordLink,
 } from "./AuthForm";
 import { FirebaseContext } from "../contexts";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import styled from "styled-components";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -29,6 +31,7 @@ function Login() {
       }
     });
   };
+
   return (
     <AuthBackground>
       <AuthContainer>
@@ -51,6 +54,9 @@ function Login() {
             />
           </div>
           <AuthInput type="submit" value="Sign In" />
+          <ResetPasswordLink href="/reset-password">
+            Forgot Password?
+          </ResetPasswordLink>
         </AuthForm>
       </AuthContainer>
     </AuthBackground>

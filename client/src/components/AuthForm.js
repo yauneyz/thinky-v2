@@ -23,6 +23,7 @@ export const AuthTitle = styled.p`
   margin-bottom: 1em;
   opacity: 0.7;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  -webkit-text-stroke: 0.6px white;
 `;
 
 export const AuthLabel = styled.label`
@@ -62,7 +63,7 @@ export const AuthInput = styled.input`
 
   &[type="submit"],
   &[type="button"] {
-    font-size: 0.95em;
+    font-size: 0.9em;
     color: ${colorscheme.contrastText};
     font-family: ${fonts.heading};
   }
@@ -83,4 +84,14 @@ export const AuthBackground = styled.div`
   );
   height: 100vh;
   font-family: ${fonts.heading};
+`;
+export const ResetPasswordLink = styled.a`
+  color: #fff;
+  font-size: 1.2rem;
+  text-decoration: none;
+  margin-top: 1rem;
+  &:hover {
+    text-decoration: underline;
+  }
+  display: block;
 `;
