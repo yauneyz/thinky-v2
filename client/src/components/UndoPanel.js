@@ -109,6 +109,8 @@ export default function UndoPanel({ BC }) {
         </Undo>
       );
     });
+  } else {
+    deletedTabs = <div></div>;
   }
 
   let deletedAxes = [];
@@ -135,6 +137,8 @@ export default function UndoPanel({ BC }) {
         </Undo>
       );
     });
+  } else {
+    deletedAxes = <div></div>;
   }
 
   return (
