@@ -22,7 +22,6 @@ function formatBoardHTML(title, text) {
   const lines = text.split("\n");
   const body = lines.slice(0, 20).join("<br />");
   const html = `${titleElement}${body}`;
-  console.log(html);
   return html;
 }
 
@@ -122,7 +121,7 @@ const AxisNodeBase = ({
     renameBoard,
     reorderBoards,
     getChildren,
-    getDescendants,
+    getDescendantIds,
   } = useContext(BoardsContext);
   const [hover, setHover] = useState(false);
   const [editable, setEditable] = useState(false);
@@ -224,7 +223,7 @@ const AxisNodeBase = ({
     };
 
     const deleteNode = () => {
-      const children = getDescendants(board.id);
+      const children = [...getDescendantIds(id), board.id];
       closeEditors(children);
       const deletedBoardData = { board, token };
       deleteAxisMutation.mutate(deletedBoardData);

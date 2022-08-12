@@ -51,7 +51,9 @@ function displayReducer(state, action) {
       const newTabs = produce(tabs, (draft) => {
         draft[open].editors = draft[open].editors.filter(
           // editor not in ids
-          (editor) => action.ids.includes(editor)
+          (editor) => {
+            return !action.ids.includes(editor);
+          }
         );
       });
       return { ...state, tabs: newTabs };

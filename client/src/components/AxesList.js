@@ -24,7 +24,6 @@ const AxesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-  margin-top: 0.3em;
 `;
 
 const AxesListMenu = styled.div`
@@ -32,10 +31,9 @@ const AxesListMenu = styled.div`
   flex-direction: row;
   justify-content: left;
   align-items: center;
-  height: 1em;
-  margin-bottom: 2px;
+  height: 2em;
   border-bottom: 1px solid ${colorscheme.contastText};
-  padding-bottom: 3px;
+  margin-bottom: 5px;
 `;
 
 const AxesMenuButton = styled.button`
@@ -44,7 +42,8 @@ const AxesMenuButton = styled.button`
   cursor: pointer;
   outline: none;
   padding: 0;
-  margin: 3px;
+  margin-left: 3px;
+  margin-right: 3px;
 `;
 
 export default function AxesList() {
