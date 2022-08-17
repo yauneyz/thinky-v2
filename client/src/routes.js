@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import VerifyEmail from "./components/VerifyEmail";
 import LoadingPage from "./components/LoadingPage";
+import Wiki from "./components/Wiki";
 import EssayPage from "./components/EssayPage";
 import ResetPassword from "./components/ResetPassword";
 import CheckoutSuccess from "./components/CheckoutSuccess";
@@ -54,6 +55,7 @@ const AppRoutes = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="loading" element={<LoadingPage />} />
       <Route path="essay" element={<EssayPage />} />
+      <Route path="wiki" element={<Wiki />} />
     </Routes>
   );
 };

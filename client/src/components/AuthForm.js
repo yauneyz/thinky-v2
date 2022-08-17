@@ -17,13 +17,12 @@ export const AuthForm = styled.form`
 `;
 
 export const AuthTitle = styled.p`
-  font-size: 1.5em;
+  font-size: 2em;
   font-weight: bold;
   color: ${colorscheme.secondary};
-  margin-bottom: 1em;
   opacity: 0.7;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-  -webkit-text-stroke: 0.6px white;
+  -webkit-text-stroke: 0.7px white;
+  margin: 0;
 `;
 
 export const AuthLabel = styled.label`
@@ -34,10 +33,9 @@ export const AuthInput = styled.input`
   background: transparent;
   width: 200px;
   padding: 1em;
-  margin-bottom: 2em;
   border: none;
-  border-left: 1px solid ${colorscheme.transparentWhite};
-  border-top: 1px solid ${colorscheme.transparentWhite};
+  margin: 1em;
+  border: 1px solid white;
   border-radius: 5000px;
   backdrop-filter: blur(5px);
   box-shadow: 4px 4px 60px rgba (0, 0, 0, 0.2);
@@ -56,14 +54,13 @@ export const AuthInput = styled.input`
 
   &:hover {
     background: ${colorscheme.transparentWhite};
-    border-left: 1px solid ${colorscheme.secondary};
-    border-top: 1px solid ${colorscheme.secondary};
+    border: 1px solid ${colorscheme.secondary};
     box-shadow: 4px 4px 60px rgba (0, 0, 0, 0.2);
   }
 
   &[type="submit"],
   &[type="button"] {
-    font-size: 0.9em;
+    font-size: 1.2em;
     color: ${colorscheme.contrastText};
     font-family: ${fonts.heading};
   }
@@ -86,10 +83,11 @@ export const AuthBackground = styled.div`
   font-family: ${fonts.heading};
 `;
 export const ResetPasswordLink = styled.a`
-  color: #fff;
+  color: black;
   font-size: 1.2rem;
   text-decoration: none;
   margin-top: 1rem;
+  padding-bottom: 1em;
   &:hover {
     text-decoration: underline;
   }
