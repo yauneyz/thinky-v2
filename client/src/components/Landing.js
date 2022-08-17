@@ -113,7 +113,7 @@ function Landing() {
             Explore ideaspace with the only text editor designed for lateral
             thinking
           </LandingTagline>
-          <BlogLink to="/blog">
+          <BlogLink to="/essay">
             Click here to read the full explanation
           </BlogLink>
           <ButtonsContainer>
