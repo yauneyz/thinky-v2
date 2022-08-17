@@ -48,6 +48,9 @@ function displayReducer(state, action) {
     }
     // Closes all editors whose coordinates contain the given coord
     case "CLOSE_EDITORS": {
+      if (open === -1) {
+        return state;
+      }
       const newTabs = produce(tabs, (draft) => {
         draft[open].editors = draft[open].editors.filter(
           // editor not in ids

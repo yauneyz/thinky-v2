@@ -81,7 +81,7 @@ export default function UndoPanel({ BC }) {
     },
   });
 
-  if (tabStatus === "success") {
+  if (tabStatus === "success" && tabData.length > 0) {
     // User reverse order so more recent deletes are first
     const clone = [...tabData];
     tabData.reverse();

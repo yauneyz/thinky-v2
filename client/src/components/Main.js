@@ -30,7 +30,6 @@ export default function Main() {
   // Check for authentication
   const { token } = useContext(AuthContext);
   //console.log(token);
-
   // The application state
   const { tabs, setDisplayState } = useContext(DisplayContext);
   const { boards, setBoards } = useContext(BoardsContext);
@@ -82,7 +81,7 @@ export default function Main() {
         <AxesList />
         <Editors />
       </Container2>
-      <Saver />)
+      <Saver />
     </AppContainer>
   );
 }
