@@ -3,7 +3,7 @@ import colorscheme from "../constants/colorscheme";
 import fonts from "../constants/fonts";
 
 export const AuthForm = styled.form`
-  background: ${colorscheme.transparentWhite};
+  background: ${colorscheme.secondary};
   padding: 3em;
   height: 320px;
   border-radius: 20px;
@@ -19,9 +19,8 @@ export const AuthForm = styled.form`
 export const AuthTitle = styled.p`
   font-size: 2em;
   font-weight: bold;
-  color: ${colorscheme.secondary};
+  color: white;
   opacity: 0.7;
-  -webkit-text-stroke: 0.7px white;
   margin: 0;
 `;
 
@@ -39,7 +38,7 @@ export const AuthInput = styled.input`
   border-radius: 5000px;
   backdrop-filter: blur(5px);
   box-shadow: 4px 4px 60px rgba (0, 0, 0, 0.2);
-  color: ${colorscheme.contrastText};
+  color: white;
   font-family: ${fonts.body};
   font-weight: 500;
   transition: all 0.2s ease-in-out;
@@ -54,14 +53,12 @@ export const AuthInput = styled.input`
 
   &:hover {
     background: ${colorscheme.transparentWhite};
-    border: 1px solid ${colorscheme.secondary};
     box-shadow: 4px 4px 60px rgba (0, 0, 0, 0.2);
   }
 
   &[type="submit"],
   &[type="button"] {
     font-size: 1.2em;
-    color: ${colorscheme.contrastText};
     font-family: ${fonts.heading};
   }
 `;
@@ -74,11 +71,7 @@ export const AuthContainer = styled.div`
 `;
 
 export const AuthBackground = styled.div`
-  background: linear-gradient(
-    45deg,
-    ${colorscheme.secondary},
-    ${colorscheme.primary}
-  );
+  background: ${colorscheme.primary};
   height: 100vh;
   font-family: ${fonts.heading};
 `;

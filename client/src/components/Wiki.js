@@ -5,5 +5,7 @@ import fonts from "../constants/fonts";
 import colorscheme from "../constants/colorscheme";
 
 function Wiki() {
-  return <div></div>;
+  return <div>This is the Wiki</div>;
 }
+
+export default Wiki;

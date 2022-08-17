@@ -29,7 +29,7 @@ const TitleText = memo(styled.span`
   margin-bottom: auto;
 `);
 
-const WikiText = memo(styled.span`
+const WikiText = memo(styled.a`
   color: ${colorscheme.secondary};
   font-size: 1em;
   margin: 5px;
@@ -39,6 +39,7 @@ const WikiText = memo(styled.span`
   &:hover {
     cursor: pointer;
   }
+  text-decoration: none;
 `);
 
 export default function TitleBar() {
@@ -47,7 +48,7 @@ export default function TitleBar() {
     <TitleWrapper>
       <Logo src={process.env.PUBLIC_URL + "/light_logo.png"} />
       <TitleText>Thinky</TitleText>
-      <WikiText>Wiki</WikiText>
+      <WikiText href="/wiki">Wiki</WikiText>
       <LogoutButton />
       {customerId && <ManageSubscriptionForm customerId={customerId} />}
     </TitleWrapper>

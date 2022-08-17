@@ -26,6 +26,14 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="wiki"
+        element={
+          <RequireAuth auth={auth} emailVerified={emailVerified}>
+            <Wiki />
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/landing"
         element={
           <SkipIfAuth auth={auth}>
@@ -55,7 +63,6 @@ const AppRoutes = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="loading" element={<LoadingPage />} />
       <Route path="essay" element={<EssayPage />} />
-      <Route path="wiki" element={<Wiki />} />
     </Routes>
   );
 };

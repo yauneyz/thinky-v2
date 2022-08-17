@@ -145,7 +145,9 @@ function EssayPage() {
 				</p>`,
           }}
         />
-        <CTAButton>Click here to join the beta</CTAButton>
+        <a href="/register">
+          <CTAButton>Click here to join the beta</CTAButton>
+        </a>
       </EssayContainer>
     </Background>
   );
