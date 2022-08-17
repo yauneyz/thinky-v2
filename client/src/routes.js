@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import VerifyEmail from "./components/VerifyEmail";
 import LoadingPage from "./components/LoadingPage";
+import EssayPage from "./components/EssayPage";
 import ResetPassword from "./components/ResetPassword";
 import CheckoutSuccess from "./components/CheckoutSuccess";
 import CheckoutCancel from "./components/CheckoutCancel";
@@ -52,6 +53,7 @@ const AppRoutes = () => {
       <Route path="checkout-cancel" element={<CheckoutCancel />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="loading" element={<LoadingPage />} />
+      <Route path="essay" element={<EssayPage />} />
     </Routes>
   );
 };
