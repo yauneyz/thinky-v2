@@ -167,6 +167,17 @@ const AxisNodeBase = ({
     }
   };
 
+  const addChild = () => {
+    let newBoard = NewBoard();
+    newBoard.parentId = board.id;
+    addBoard(newBoard);
+    setHighlightTarget(newBoard.id);
+  };
+
+  const open = () => {
+    openEditor(board.id);
+  };
+
   const treeKeyCommands = (e) => {
     // All the tree commands
     if (hover) {
@@ -179,16 +190,13 @@ const AxisNodeBase = ({
       // Add a new node
       if (e.key === "a") {
         e.preventDefault();
-        let newBoard = NewBoard();
-        newBoard.parentId = board.id;
-        addBoard(newBoard);
-        setHighlightTarget(newBoard.id);
+        addChild();
       }
 
       // Open the editor
       if (e.key === "q") {
         e.preventDefault();
-        openEditor(id);
+        open();
       }
 
       // Create a new tab with this node open
@@ -253,6 +261,22 @@ const AxisNodeBase = ({
               : undefined
           }
         >
+          <MenuItem
+            onClick={() => {
+              addChild();
+              handleClose();
+            }}
+          >
+            Add Child
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              open();
+              handleClose();
+            }}
+          >
+            Open
+          </MenuItem>
           <MenuItem onClick={deleteNode}>Delete</MenuItem>
           <MenuItem onClick={handleExpandBelow}>Expand Below</MenuItem>
           <MenuItem onClick={handleCollapseBelow}>Collapse Below</MenuItem>

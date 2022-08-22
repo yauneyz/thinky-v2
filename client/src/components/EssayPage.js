@@ -4,10 +4,27 @@ import styled from "styled-components";
 import fonts from "../constants/fonts";
 import colorscheme from "../constants/colorscheme";
 
+const TitleBar = styled.div`
+  padding: 10px;
+  font-size: 1.5em;
+  font-family: ${fonts.heading};
+  font-weight: bold;
+  border-bottom: 1px solid ${colorscheme.primary};
+  border-top: 1px solid ${colorscheme.primary};
+  border-left: 1px solid ${colorscheme.primary};
+  border-right: 1px solid ${colorscheme.primary};
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const Logo = styled.img`
   width: 100px;
   height: 100px;
   margin-top: 20px;
+  margin-right: auto;
 `;
 
 const Background = styled.div`
@@ -58,10 +75,12 @@ function EssayPage() {
   return (
     <Background>
       <EssayContainer>
-        <a href="/">
-          <Logo src={process.env.PUBLIC_URL + "light_logo.png"} />
-        </a>
-        <EssayTitle>Why We Need an Idea Editor</EssayTitle>
+        <TitleBar>
+          <a href="/">
+            <Logo src={process.env.PUBLIC_URL + "light_logo.png"} />
+          </a>
+          <EssayTitle>Why We Need an Idea Editor</EssayTitle>
+        </TitleBar>
         <EssayText
           dangerouslySetInnerHTML={{
             __html: `				
@@ -125,7 +144,7 @@ function EssayPage() {
 					Now we get to the part where I pitch my software. I built the Thinky Idea Editor to solve precisely the pain points that I have listed. Even if nobody else ever uses it, I feel like it has been a wild success for me personally. Is it perfect? Not yet. In fact, it's really pretty simple. There are surely tens of thousands of developers that could implement these ideas much better and much quicker than I have. But the reality is that Thinky is better than anything else I've used for the task of ideation, and playing with it is a real blast. I love the feeling of "exploring" ideaspace. I also find that I have a bunch of really cool ideas when I use it.
 				</p>
 				<p>
-					Because it's a labor of love, you (the potential user) can expect many feature improvements. There is still a lot of friction to be eliminated. I haven't even started on trying to build features to explicitly help the user work through the tools listed in the book I mentioned earlier, "Thinkertoys." That will certainly be a massive upgrade. But for now, I really do feel that even in the current beta version, this "idea editor," combined with lateral thinking techniques, is extremely useful for helping anyone have really cool and novel ideas. Steve Jobs once said that a computer should behave like a "bicycle for the mind." I feel that this software does a very good job of being just that.
+					Because it's a labor of love, you (the potential user) can expect many feature improvements. There is still a lot of friction to be eliminated. I haven't even started on trying to build features to explicitly help the user work through the tools listed in the book I mentioned earlier, "Thinkertoys." That will certainly be a massive upgrade. But for now, I really do feel that even in the current beta version, this "idea editor," combined with lateral thinking techniques, is extremely useful for helping anyone have really cool and novel ideas. Steve Jobs once said that a computer should function as a "bicycle for the mind." I feel that this software does a very good job of being just that.
 
 				</p>
 				<p>

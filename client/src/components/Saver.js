@@ -8,6 +8,26 @@ export default function Saver() {
 
   const saveSeconds = 2;
 
+  const save = () => {
+    fetch("/boards", {
+      method: "POST",
+      body: JSON.stringify({ open, boards, tabs, topNode }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+  };
+
+  // If the user inputs crtl + s, then save the file.
+  const handleKeySave = (event) => {
+    console.log(event.keyCode);
+    if (event.ctrlKey && event.keyCode === 83) {
+      event.preventDefault();
+      save();
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       fetch("/boards", {
@@ -21,5 +41,5 @@ export default function Saver() {
     }, saveSeconds * 1000);
     return () => clearInterval(interval);
   });
-  return <div></div>;
+  return <div onKeyDown={handleKeySave}></div>;
 }
