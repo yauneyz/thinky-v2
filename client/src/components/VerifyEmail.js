@@ -1,6 +1,6 @@
 import React from "react";
 import { sendEmailVerification } from "firebase/auth";
-import { AuthContext, FirebaseContext } from "../contexts";
+import { FirebaseContext } from "../contexts";
 import {
   AuthBackground,
   AuthContainer,
@@ -13,6 +13,7 @@ export default function VerifyEmail() {
   const { Auth } = React.useContext(FirebaseContext);
   const resendVerificationEmail = async () => {
     const url = process.env.REACT_APP_FRONTEND_URL;
+    console.log("url", url);
     try {
       await sendEmailVerification(Auth.currentUser, {
         url: url,

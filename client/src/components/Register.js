@@ -51,8 +51,6 @@ function Register() {
 
         const url = process.env.REACT_APP_FRONTEND_URL;
         console.log("URL: ", url);
-        console.log("Env", process.env);
-        console.log("User: ", Auth.currentUser);
         await sendEmailVerification(Auth.currentUser, {
           url: url,
         });
