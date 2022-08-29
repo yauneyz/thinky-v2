@@ -30,7 +30,7 @@ export const AuthLabel = styled.label`
 
 export const AuthInput = styled.input`
   background: transparent;
-  width: 200px;
+  width: auto;
   padding: 1em;
   border: none;
   margin: 1em;
