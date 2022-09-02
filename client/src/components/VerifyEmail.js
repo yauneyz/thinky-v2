@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { sendEmailVerification } from "firebase/auth";
-import { FirebaseContext } from "../contexts";
+import { AuthContext, FirebaseContext } from "../contexts";
+import { Navigate } from "react-router-dom";
 import {
   AuthBackground,
   AuthContainer,
@@ -11,6 +12,13 @@ import {
 
 export default function VerifyEmail() {
   const { Auth } = React.useContext(FirebaseContext);
+
+  // Handle the case where we just got verified and need to reload
+  const { emailVerified } = useContext(AuthContext);
+  if (emailVerified) {
+    return <Navigate to="/" />;
+  }
+
   const resendVerificationEmail = async () => {
     const url = process.env.REACT_APP_FRONTEND_URL;
     console.log("url", url);
