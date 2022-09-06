@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
+import styled from "styled-components";
 import { sendEmailVerification } from "firebase/auth";
 import { AuthContext, FirebaseContext } from "../contexts";
+import LogoutButton from "./LogoutButton";
 import { Navigate } from "react-router-dom";
 import {
   AuthBackground,
@@ -9,6 +11,14 @@ import {
   AuthInput,
   AuthForm,
 } from "./AuthForm";
+
+const LogoutButtonStyled = styled(LogoutButton)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: red;
+  background: blue;
+`;
 
 export default function VerifyEmail() {
   const { Auth } = React.useContext(FirebaseContext);
@@ -49,6 +59,7 @@ export default function VerifyEmail() {
               "If you've already verified your email, please try closing the tab and re-opening the site."
             }
           </p>
+          <LogoutButtonStyled />
         </AuthForm>
       </AuthContainer>
     </AuthBackground>

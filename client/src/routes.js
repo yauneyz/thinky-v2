@@ -20,19 +20,20 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          <RequireAuth auth={auth} emailVerified={emailVerified}>
+          <RequireTotalAuth auth={auth} emailVerified={emailVerified}>
             <Main />
-          </RequireAuth>
+          </RequireTotalAuth>
         }
       />
       <Route
-        path="wiki"
+        path="/verify-email"
         element={
-          <RequireAuth auth={auth} emailVerified={emailVerified}>
-            <Wiki />
-          </RequireAuth>
+          <RequireOnlyAuth auth={auth} emailVerified={emailVerified}>
+            <VerifyEmail />{" "}
+          </RequireOnlyAuth>
         }
       />
+      <Route path="wiki" element={<Wiki />} />
       <Route
         path="/landing"
         element={
@@ -57,7 +58,6 @@ const AppRoutes = () => {
           </SkipIfAuth>
         }
       />
-      <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="checkout-success" element={<CheckoutSuccess />} />
       <Route path="checkout-cancel" element={<CheckoutCancel />} />
       <Route path="/reset-password" element={<ResetPassword />} />
@@ -67,7 +67,16 @@ const AppRoutes = () => {
   );
 };
 
-function RequireAuth({ auth, emailVerified, children }) {
+function RequireOnlyAuth({ auth, children }) {
+  const location = useLocation();
+  // Redirect to the landing page
+  if (!auth) {
+    return <Navigate to="/landing" state={{ from: location }} replace />;
+  }
+  return children;
+}
+
+function RequireTotalAuth({ auth, emailVerified, children }) {
   const location = useLocation();
   // Redirect to the landing page
   if (!auth) {

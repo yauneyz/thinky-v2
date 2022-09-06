@@ -66,7 +66,7 @@ function Wiki() {
         </Paragraph>
         <Paragraph>
           {`To add a child file, right click on the file and select "Add Child" or click on the intended parent file and then press
-          "a".`}
+          "a". You could also press "A" to simulatneously create a child file and open it in a new tab.`}
         </Paragraph>
         <SubHeading>Renaming Files</SubHeading>
         <Paragraph>

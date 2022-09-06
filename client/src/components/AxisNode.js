@@ -172,10 +172,11 @@ const AxisNodeBase = ({
     newBoard.parentId = board.id;
     addBoard(newBoard);
     setHighlightTarget(newBoard.id);
+    return newBoard;
   };
 
-  const open = () => {
-    openEditor(board.id);
+  const open = (targetBoard) => {
+    openEditor(targetBoard.id);
   };
 
   const treeKeyCommands = (e) => {
@@ -193,10 +194,17 @@ const AxisNodeBase = ({
         addChild();
       }
 
+      // Add a new node and open it in a new tab
+      if (e.key === "A") {
+        e.preventDefault();
+        const newBoard = addChild();
+        open(newBoard);
+      }
+
       // Open the editor
       if (e.key === "q") {
         e.preventDefault();
-        open();
+        open(board);
       }
 
       // Create a new tab with this node open
@@ -204,7 +212,7 @@ const AxisNodeBase = ({
         e.preventDefault();
         const newTab = {
           name: board.title,
-          editors: [],
+          editors: [board.id],
         };
         addTab(newTab);
       }
