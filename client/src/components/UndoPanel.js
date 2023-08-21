@@ -111,7 +111,7 @@ export default function UndoPanel({ BC }) {
     });
   }
   let deletedAxes = <div></div>;
-  if (axesStatus == "success") {
+  if (axesStatus == "success" && axesData.length > 0) {
     const clone = [...axesData];
     axesData.reverse();
     deletedAxes = clone.map((axis) => {
