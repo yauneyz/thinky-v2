@@ -25,4 +25,4 @@ const light = {
   transparentWhite: "rgba(255, 255, 255, 0.3)",
 };
 
-export default light;
+export default dark;
