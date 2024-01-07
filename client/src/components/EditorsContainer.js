@@ -23,7 +23,7 @@ const EditorsContainer = styled.div`
   height: 100%;
   display: flex;
   flex-wrap: wrap;
-  background-color: ${colorscheme.tertiary};
+  background-color: ${colorscheme.textBackground};
 `;
 
 const EditorText = styled.textarea`
@@ -35,6 +35,8 @@ const EditorText = styled.textarea`
   font-family: ${fonts.body};
   font-size: 14px;
   padding: 8px;
+  background: ${colorscheme.textBackground};
+  color: ${colorscheme.text};
   &:focus {
     outline: none;
     border: 1px solid ${colorscheme.secondary};

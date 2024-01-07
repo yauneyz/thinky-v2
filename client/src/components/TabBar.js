@@ -12,7 +12,6 @@ import fonts from "../constants/fonts";
 const TabBarContainer = styled.div`
   height: 2em;
   width: 100%;
-  background: #ddd;
   display: flex;
   font-family: ${fonts.heading};
   background: ${colorscheme.quartenary};
@@ -161,7 +160,7 @@ function TabButtonBase({
 
 const TabButton = styled(TabButtonBase)`
   background: ${(props) => (props.open === props.index ? "#fff" : "gray")};
-  color: ${(props) => (props.open === props.index ? "black" : "white")};
+  color: ${(props) => (props.open === props.index ? "silver" : "white")};
   width: 8em;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -169,8 +168,9 @@ const TabButton = styled(TabButtonBase)`
   margin-bottom: 0;
   display: flex;
   align-items: center;
+  background: ${colorscheme.secondary};
   &:hover {
-    background: ${colorscheme.secondary};
+    background: ${colorscheme.tertiary};
     color: ${colorscheme.text};
     cursor: pointer;
   }

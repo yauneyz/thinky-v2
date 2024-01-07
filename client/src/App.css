@@ -4,7 +4,7 @@ html,body, #root{
 }
 
 .faIcon{
-	color: black;
+	color: white;
 	&:hover{
 		color: #00bcd4;
 	}

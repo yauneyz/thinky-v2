@@ -1,14 +1,15 @@
 const dark = {
   primary: "#17191aff",
-  secondary: "#279af1ff",
-  tertiary: "#fbf5f3ff",
+  secondary: "#005B41",
+  tertiary: "#008170",
   quaternary: "#23ce6bff",
   quinary: "#a64253ff",
   axesList: "#464a4f",
   red: "#ff4136ff",
   green: "rgb(46,164,79)",
+  textBackground: "#232D3F",
   contrastText: "#fff",
-  text: "#000",
+  text: "white",
 };
 
 const light = {
